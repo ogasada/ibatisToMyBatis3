@@ -7,7 +7,7 @@ import org.xml.sax.InputSource
 import java.io.StringReader
 import javax.xml.parsers.DocumentBuilderFactory
 
-class SqlMapConverterTest {
+internal class SqlMapTagConverterTest {
     @Test
     fun convertForValidDocument() {
         val loadedDocument = loadValidDocument()
@@ -17,7 +17,7 @@ class SqlMapConverterTest {
         val mapperTagsBeforeConvert = loadedDocument.getElementsByTagName("mapper")
         assertEquals(0, mapperTagsBeforeConvert.length)
 
-        val convertedDocument = SqlMapConverter.convert(loadedDocument)
+        val convertedDocument = SqlMapTagConverter.convert(loadedDocument)
 
         val sqlMapTagsAfterConvert = convertedDocument.getElementsByTagName("sqlMap")
         assertEquals(0, sqlMapTagsAfterConvert.length)
@@ -59,7 +59,7 @@ class SqlMapConverterTest {
         val mapperTagsBeforeConvert = loadedDocument.getElementsByTagName("mapper")
         assertEquals(0, mapperTagsBeforeConvert.length)
 
-        val convertedDocument = SqlMapConverter.convert(loadedDocument)
+        val convertedDocument = SqlMapTagConverter.convert(loadedDocument)
 
         val sqlMapTagsAfterConvert = convertedDocument.getElementsByTagName("sqlMap")
         assertEquals(0, sqlMapTagsAfterConvert.length)
