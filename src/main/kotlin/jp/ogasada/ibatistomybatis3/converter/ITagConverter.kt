@@ -12,12 +12,13 @@ interface ITagConverter {
     /**
      * convert [oldTag] to [newTag] in [xmlDocument]
      */
-    fun convertTagName(xmlDocument: Document, oldTag: String, newTag: String): Document {
-        val tags = xmlDocument.getElementsByTagName(oldTag)
+    fun Document.convertTagName(oldTag: String, newTag: String): Document {
+        val tags = this.getElementsByTagName(oldTag)
         (0 until tags.length).forEach {
             val node = tags.item(it)
-            xmlDocument.renameNode(node, null, newTag)
+            this.renameNode(node, null, newTag)
         }
-        return xmlDocument
+        return this
+    }
     }
 }
