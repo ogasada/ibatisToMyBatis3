@@ -11,7 +11,7 @@ interface ITagConverter {
     fun convert(xmlDocument: Document): Document
 
     /**
-     * convert [oldTag] to [newTag] in [xmlDocument]
+     * convert [oldTag] to [newTag] in [this] document
      */
     fun Document.convertTagName(oldTag: String, newTag: String): Document {
         val tags = this.getElementsByTagName(oldTag)
@@ -23,7 +23,7 @@ interface ITagConverter {
     }
 
     /**
-     * convert [oldAttribute] to [newAttribute] in [tag] of [xmlDocument]
+     * convert [oldAttribute] to [newAttribute] in [tag] of [this] document
      */
     fun Document.convertAttributeName(tag: String, oldAttribute: String, newAttribute: String): Document {
         val tags = this.getElementsByTagName(tag)
@@ -37,7 +37,7 @@ interface ITagConverter {
     }
 
     /**
-     * remove [attribute] in [tag] of [xmlDocument]
+     * remove [attribute] in [tag] of [this] document
      */
     fun Document.removeAttribute(tag: String, attribute: String): Document {
         val tags = this.getElementsByTagName(tag)
