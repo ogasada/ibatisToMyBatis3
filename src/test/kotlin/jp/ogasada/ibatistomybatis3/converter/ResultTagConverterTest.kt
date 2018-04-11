@@ -4,22 +4,13 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.w3c.dom.Document
 
-internal class SqlMapFileConverterTest {
+internal class ResultTagConverterTest {
     @Test
-    fun convert() {
+    fun convertForValidDocument() {
         val loadedDocument = loadValidDocument()
 
-        val sqlMapTagsBeforeConvert = loadedDocument.getElementsByTagName("sqlMap")
-        assertEquals(1, sqlMapTagsBeforeConvert.length)
-        val mapperTagsBeforeConvert = loadedDocument.getElementsByTagName("mapper")
-        assertEquals(0, mapperTagsBeforeConvert.length)
-        assertTrue(existsAttribute(loadedDocument, "resultMap", "class"))
-        assertTrue(existsAttribute(loadedDocument, "resultMap", "id"))
-        assertTrue(existsAttribute(loadedDocument, "resultMap", "groupBy"))
-        assertFalse(existsAttribute(loadedDocument, "resultMap", "type"))
-        assertEquals(attributeValue(loadedDocument, "resultMap", "id"), "findResult")
-        assertEquals(attributeValue(loadedDocument, "resultMap", "class"), "HashMap")
-        assertEquals(attributeValue(loadedDocument, "resultMap", "groupBy"), "id")
+        val resultTagsBeforeConvert = loadedDocument.getElementsByTagName("result")
+        assertEquals(3, resultTagsBeforeConvert.length)
         assertEquals(attributeValue(loadedDocument, "result", "property", 0), "id")
         assertEquals(attributeValue(loadedDocument, "result", "property", 1), "name")
         assertEquals(attributeValue(loadedDocument, "result", "property", 2), "detailList")
@@ -33,18 +24,10 @@ internal class SqlMapFileConverterTest {
         assertTrue(existsAttribute(loadedDocument, "result", "resultMap", 2))
         assertEquals(attributeValue(loadedDocument, "result", "resultMap", 2), "jp.ogasada.ibatistomybatis3.detailResult")
 
-        val convertedDocument: Document = SqlMapFileConverter.convert(loadedDocument)
+        val convertedDocument = ResultTagConverter.convert(loadedDocument)
 
-        val sqlMapTagsAfterConvert = convertedDocument.getElementsByTagName("sqlMap")
-        assertEquals(0, sqlMapTagsAfterConvert.length)
-        val mapperTagsAfterConvert = convertedDocument.getElementsByTagName("mapper")
-        assertEquals(1, mapperTagsAfterConvert.length)
-        assertFalse(existsAttribute(loadedDocument, "resultMap", "class"))
-        assertTrue(existsAttribute(loadedDocument, "resultMap", "id"))
-        assertFalse(existsAttribute(loadedDocument, "resultMap", "groupBy"))
-        assertTrue(existsAttribute(loadedDocument, "resultMap", "type"))
-        assertEquals(attributeValue(loadedDocument, "resultMap", "id"), "findResult")
-        assertEquals(attributeValue(loadedDocument, "resultMap", "type"), "HashMap")
+        val resultTagsAfterConvert = convertedDocument.getElementsByTagName("result")
+        assertEquals(3, resultTagsAfterConvert.length)
         assertEquals(attributeValue(loadedDocument, "result", "property", 0), "id")
         assertEquals(attributeValue(loadedDocument, "result", "property", 1), "name")
         assertEquals(attributeValue(loadedDocument, "result", "property", 2), "detailList")

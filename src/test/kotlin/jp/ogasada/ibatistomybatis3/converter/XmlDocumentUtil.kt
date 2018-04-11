@@ -18,11 +18,9 @@ internal fun loadXML(xml: String): Document {
 /**
  * return true when exists [attributeName] in [tagName] of [xmlDocument]
  */
-internal fun existsAttribute(xmlDocument: Document, tagName: String, attributeName: String): Boolean {
+internal fun existsAttribute(xmlDocument: Document, tagName: String, attributeName: String, index: Int = 0): Boolean {
     val tags = xmlDocument.getElementsByTagName(tagName)
-    return (0 until tags.length).any {
-        (tags.item(it) as Element).hasAttribute(attributeName)
-    }
+    return (tags.item(index) as Element).hasAttribute(attributeName)
 }
 
 internal fun attributeValue(xmlDocument: Document, tagName: String, attributeName: String, index: Int = 0): String =
