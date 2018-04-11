@@ -47,4 +47,18 @@ interface ITagConverter {
         }
         return this
     }
+
+    /**
+     * convert value of [attribute] by [valueConverter] in [tag] of [this] document
+     */
+    fun Document.convertAttributeValue(tag: String, attribute: String, valueConverter: (String) -> String): Document {
+        val tags = this.getElementsByTagName(tag)
+        (0 until tags.length).forEach {
+            val node = tags.item(it) as Element
+            if (node.hasAttribute(attribute)) {
+                node.setAttribute(attribute, valueConverter(node.getAttribute(attribute)))
+            }
+        }
+        return this
+    }
 }
