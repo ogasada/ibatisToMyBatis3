@@ -29,9 +29,11 @@ interface ITagConverter {
         val tags = this.getElementsByTagName(tag)
         (0 until tags.length).forEach {
             val node = tags.item(it) as Element
-            val classValue = node.getAttribute(oldAttribute)
-            node.removeAttribute(oldAttribute)
-            node.setAttribute(newAttribute, classValue)
+            if (node.hasAttribute(oldAttribute)) {
+                val classValue = node.getAttribute(oldAttribute)
+                node.removeAttribute(oldAttribute)
+                node.setAttribute(newAttribute, classValue)
+            }
         }
         return this
     }
