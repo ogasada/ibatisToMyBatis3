@@ -5,7 +5,8 @@ object ConverterLoader {
     private val converters = listOf(
             SqlMapTagConverter,
             ResultMapTagConverter,
-            ResultTagConverter)
+            ResultTagConverter,
+            SelectTagConverter)
 
     fun load(): List<ITagConverter> = converters
 }
