@@ -13,6 +13,7 @@ internal class SqlMapFileConverterTest {
         resultMapTagTestBeforeConvert(loadedDocument)
         resultTagTestBeforeConvert(loadedDocument)
         selectTagTestBeforeConvert(loadedDocument)
+        insertTagTestBeforeConvert(loadedDocument)
 
         val convertedDocument: Document = SqlMapFileConverter.convert(loadedDocument)
 
@@ -20,6 +21,7 @@ internal class SqlMapFileConverterTest {
         resultMapTagTestAfterConvert(convertedDocument)
         resultTagTestAfterConvert(convertedDocument)
         selectTagTestAfterConvert(convertedDocument)
+        insertTagTestAfterConvert(convertedDocument)
     }
 
     private fun sqlMapTagTestBeforeConvert(loadedDocument: Document) {
@@ -119,6 +121,22 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "select", "parameterClass", 1))
     }
 
+    private fun insertTagTestBeforeConvert(loadedDocument: Document) {
+        val insertTagsBeforeConvert = loadedDocument.getElementsByTagName("insert")
+        assertEquals(1, insertTagsBeforeConvert.length)
+        assertEquals("insert", attributeValue(loadedDocument, "insert", "id", 0))
+        assertEquals("jp.ogasada.ibatistomybatis3.TestTableEntity", attributeValue(loadedDocument, "insert", "parameterClass", 0))
+        assertFalse(existsAttribute(loadedDocument, "insert", "parameterType", 0))
+    }
+
+    private fun insertTagTestAfterConvert(convertedDocument: Document) {
+        val insertTagsAfterConvert = convertedDocument.getElementsByTagName("insert")
+        assertEquals(1, insertTagsAfterConvert.length)
+        assertEquals("insert", attributeValue(convertedDocument, "insert", "id", 0))
+        assertEquals("jp.ogasada.ibatistomybatis3.TestTableEntity", attributeValue(convertedDocument, "insert", "parameterType", 0))
+        assertFalse(existsAttribute(convertedDocument, "insert", "parameterClass", 0))
+    }
+
     private fun loadValidDocument(): Document {
         val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<!DOCTYPE sqlMap\n" +
@@ -148,6 +166,16 @@ internal class SqlMapFileConverterTest {
                 "    WHERE\n" +
                 "      id = #id#\n" +
                 "  </select>\n" +
+                "  <insert id=\"insert\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
+                "    INSERT INTO testTable (\n" +
+                "      id,\n" +
+                "      name\n" +
+                "    )\n" +
+                "    VALUES (\n" +
+                "      #id#,\n" +
+                "      #name#\n" +
+                "    )\n" +
+                "  </insert>" +
                 "</sqlMap>\n"
 
         return loadXML(xml)

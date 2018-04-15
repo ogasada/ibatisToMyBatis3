@@ -6,7 +6,8 @@ object ConverterLoader {
             SqlMapTagConverter,
             ResultMapTagConverter,
             ResultTagConverter,
-            SelectTagConverter)
+            SelectTagConverter,
+            InsertTagConverter)
 
     fun load(): List<ITagConverter> = converters
 }
