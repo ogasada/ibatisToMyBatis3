@@ -8,7 +8,8 @@ object ConverterLoader {
             ResultTagConverter,
             SelectTagConverter,
             InsertTagConverter,
-            UpdateTagConverter)
+            UpdateTagConverter,
+            DeleteTagConverter)
 
     fun load(): List<ITagConverter> = converters
 }

@@ -15,6 +15,7 @@ internal class SqlMapFileConverterTest {
         selectTagTestBeforeConvert(loadedDocument)
         insertTagTestBeforeConvert(loadedDocument)
         updateTagTestBeforeConvert(loadedDocument)
+        deleteTagTestBeforeConvert(loadedDocument)
 
         val convertedDocument: Document = SqlMapFileConverter.convert(loadedDocument)
 
@@ -24,6 +25,7 @@ internal class SqlMapFileConverterTest {
         selectTagTestAfterConvert(convertedDocument)
         insertTagTestAfterConvert(convertedDocument)
         updateTagTestAfterConvert(convertedDocument)
+        deleteTagTestAfterConvert(convertedDocument)
     }
 
     private fun sqlMapTagTestBeforeConvert(loadedDocument: Document) {
@@ -155,6 +157,22 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "update", "parameterClass", 0))
     }
 
+    private fun deleteTagTestBeforeConvert(loadedDocument: Document) {
+        val deleteTagsBeforeConvert = loadedDocument.getElementsByTagName("delete")
+        assertEquals(1, deleteTagsBeforeConvert.length)
+        assertEquals("delete", attributeValue(loadedDocument, "delete", "id", 0))
+        assertEquals("jp.ogasada.ibatistomybatis3.TestTableEntity", attributeValue(loadedDocument, "delete", "parameterClass", 0))
+        assertFalse(existsAttribute(loadedDocument, "delete", "parameterType", 0))
+    }
+
+    private fun deleteTagTestAfterConvert(convertedDocument: Document) {
+        val deleteTagsAfterConvert = convertedDocument.getElementsByTagName("delete")
+        assertEquals(1, deleteTagsAfterConvert.length)
+        assertEquals("delete", attributeValue(convertedDocument, "delete", "id", 0))
+        assertEquals("jp.ogasada.ibatistomybatis3.TestTableEntity", attributeValue(convertedDocument, "delete", "parameterType", 0))
+        assertFalse(existsAttribute(convertedDocument, "delete", "parameterClass", 0))
+    }
+
     private fun loadValidDocument(): Document {
         val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<!DOCTYPE sqlMap\n" +
@@ -200,6 +218,11 @@ internal class SqlMapFileConverterTest {
                 "    WHERE \n" +
                 "      id = #id#\n" +
                 "  </update>" +
+                "  <delete id=\"delete\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
+                "    DELETE FROM testTable \n" +
+                "    WHERE \n" +
+                "      id = #id#\n" +
+                "  </delete>" +
                 "</sqlMap>\n"
 
         return loadXML(xml)
