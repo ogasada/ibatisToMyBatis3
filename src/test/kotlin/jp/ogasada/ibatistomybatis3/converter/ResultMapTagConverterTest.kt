@@ -16,9 +16,9 @@ internal class ResultMapTagConverterTest {
         assertTrue(existsAttribute(loadedDocument, "resultMap", "id"))
         assertTrue(existsAttribute(loadedDocument, "resultMap", "groupBy"))
         assertFalse(existsAttribute(loadedDocument, "resultMap", "type"))
-        assertEquals(attributeValue(loadedDocument, "resultMap", "id"), "findResult")
-        assertEquals(attributeValue(loadedDocument, "resultMap", "class"), "HashMap")
-        assertEquals(attributeValue(loadedDocument, "resultMap", "groupBy"), "id")
+        assertEquals("findResult", attributeValue(loadedDocument, "resultMap", "id"))
+        assertEquals("HashMap", attributeValue(loadedDocument, "resultMap", "class"))
+        assertEquals("id", attributeValue(loadedDocument, "resultMap", "groupBy"))
 
         val convertedDocument = ResultMapTagConverter.convert(loadedDocument)
 
@@ -28,8 +28,8 @@ internal class ResultMapTagConverterTest {
         assertTrue(existsAttribute(loadedDocument, "resultMap", "id"))
         assertFalse(existsAttribute(loadedDocument, "resultMap", "groupBy"))
         assertTrue(existsAttribute(loadedDocument, "resultMap", "type"))
-        assertEquals(attributeValue(loadedDocument, "resultMap", "id"), "findResult")
-        assertEquals(attributeValue(loadedDocument, "resultMap", "type"), "HashMap")
+        assertEquals("findResult", attributeValue(loadedDocument, "resultMap", "id"))
+        assertEquals("HashMap", attributeValue(loadedDocument, "resultMap", "type"))
     }
 
     private fun loadValidDocument(): Document {
