@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.w3c.dom.Document
 
-const val COUNT_OF_IF_TAG = 6
+const val COUNT_OF_IF_TAG = 8
 
 internal class SqlMapFileConverterTest {
     @Test
@@ -21,6 +21,7 @@ internal class SqlMapFileConverterTest {
         isEmptyTagTestBeforeConvert(loadedDocument)
         isNotEmptyTagTestBeforeConvert(loadedDocument)
         isEqualTagTestBeforeConvert(loadedDocument)
+        isNotEqualTagTestBeforeConvert(loadedDocument)
 
         val convertedDocument: Document = SqlMapFileConverter.convert(loadedDocument)
 
@@ -34,6 +35,7 @@ internal class SqlMapFileConverterTest {
         isEmptyTagTestAfterConvert(convertedDocument)
         isNotEmptyTagTestAfterConvert(convertedDocument)
         isEqualTagTestAfterConvert(convertedDocument)
+        isNotEqualTagTestAfterConvert(convertedDocument)
     }
 
     private fun sqlMapTagTestBeforeConvert(loadedDocument: Document) {
@@ -291,8 +293,49 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "close", 5))
     }
 
+    private fun isNotEqualTagTestBeforeConvert(loadedDocument: Document) {
+        val isNotEqualTagsBeforeConvert = loadedDocument.getElementsByTagName("isNotEqual")
+        assertEquals(2, isNotEqualTagsBeforeConvert.length)
+        assertEquals("and (", attributeValue(loadedDocument, "isNotEqual", "open", 0))
+        assertEquals(")", attributeValue(loadedDocument, "isNotEqual", "close", 0))
+        assertEquals("name", attributeValue(loadedDocument, "isNotEqual", "property", 0))
+        assertEquals("foo", attributeValue(loadedDocument, "isNotEqual", "compareValue", 0))
+        assertEquals("\n      name = #name#\n      \n    ", textContent(loadedDocument, "isNotEqual", 0))
+        assertFalse(existsAttribute(loadedDocument, "isNotEqual", "prepend", 0))
+        assertFalse(existsAttribute(loadedDocument, "isNotEqual", "compareProperty", 0))
 
-        private fun loadValidDocument(): Document {
+        assertEquals("or", attributeValue(loadedDocument, "isNotEqual", "prepend", 1))
+        assertEquals("name2", attributeValue(loadedDocument, "isNotEqual", "property", 1))
+        assertEquals("compareName2", attributeValue(loadedDocument, "isNotEqual", "compareProperty", 1))
+        assertEquals("\n        name = #name2#\n      ", textContent(loadedDocument, "isNotEqual", 1))
+        assertFalse(existsAttribute(loadedDocument, "isNotEqual", "open", 1))
+        assertFalse(existsAttribute(loadedDocument, "isNotEqual", "close", 1))
+        assertFalse(existsAttribute(loadedDocument, "isNotEqual", "compareValue", 1))
+    }
+
+    private fun isNotEqualTagTestAfterConvert(convertedDocument: Document) {
+        val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
+        assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
+        assertEquals("!name.toString().equals('foo'.toString()))", attributeValue(convertedDocument, "if", "test", 6))
+        assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 6))
+        assertFalse(existsAttribute(convertedDocument, "if", "prepend", 6))
+        assertFalse(existsAttribute(convertedDocument, "if", "property", 6))
+        assertFalse(existsAttribute(convertedDocument, "if", "compareProperty", 6))
+        assertFalse(existsAttribute(convertedDocument, "if", "compareValue", 6))
+        assertFalse(existsAttribute(convertedDocument, "if", "open", 6))
+        assertFalse(existsAttribute(convertedDocument, "if", "close", 6))
+
+        assertEquals("!name2.toString().equals(compareName2.toString()))", attributeValue(convertedDocument, "if", "test", 7))
+        assertEquals("\n         or name = #name2#\n      ", textContent(convertedDocument, "if", 7))
+        assertFalse(existsAttribute(convertedDocument, "if", "prepend", 7))
+        assertFalse(existsAttribute(convertedDocument, "if", "property", 7))
+        assertFalse(existsAttribute(convertedDocument, "if", "compareProperty", 7))
+        assertFalse(existsAttribute(convertedDocument, "if", "compareValue", 7))
+        assertFalse(existsAttribute(convertedDocument, "if", "open", 7))
+        assertFalse(existsAttribute(convertedDocument, "if", "close", 7))
+    }
+
+    private fun loadValidDocument(): Document {
         val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<!DOCTYPE sqlMap\n" +
                 "  PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\"\n" +
@@ -338,6 +381,12 @@ internal class SqlMapFileConverterTest {
                 "        name = #name2#\n" +
                 "      </isEqual>\n" +
                 "    </isEqual>\n" +
+                "    <isNotEqual open=\"and (\" property=\"name\" compareValue=\"foo\" close=\")\">\n" +
+                "      name = #name#\n" +
+                "      <isNotEqual prepend=\"or\" property=\"name2\" compareProperty=\"compareName2\">\n" +
+                "        name = #name2#\n" +
+                "      </isNotEqual>\n" +
+                "    </isNotEqual>\n" +
                 "  </select>\n" +
                 "  <insert id=\"insert\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
                 "    INSERT INTO testTable (\n" +
