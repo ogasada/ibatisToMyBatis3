@@ -7,25 +7,25 @@ object IsEmptyTagConverter: ITagConverter {
     /**
      * convert `isEmpty` tag as follows
      *
-     * before
+     * ### before
      *
      * ```
      * <isEmpty open="and (" property="name" close=")">
      *   name = #name#
-     *     <isEmpty prepend="or" property="name2">
-     *       name = #name2#
-     *     </isEmpty>
+     *   <isEmpty prepend="or" property="name2">
+     *     name = #name2#
+     *   </isEmpty>
      * </isEmpty>
      * ```
      *
-     * after
+     * ### after
      *
      * ```
      * <if test="name == null or name == ''">
      *   and ( name = #name#
-     *     <if test="name2 == null or name2 == ''">
-     *       or name = #name2#
-     *     </if> )
+     *   <if test="name2 == null or name2 == ''">
+     *     or name = #name2#
+     *   </if> )
      * </if>
      * ```
      */

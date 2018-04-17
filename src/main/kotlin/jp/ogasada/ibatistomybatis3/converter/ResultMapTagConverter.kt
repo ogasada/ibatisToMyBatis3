@@ -7,14 +7,14 @@ object ResultMapTagConverter: ITagConverter {
     /**
      * convert `resultMap` tag as follows
      *
-     * before
+     * ### before
      *
      * ```
      * <resultMap id="findResult" class="HashMap" groupBy="id">
      * </resultMap>
      * ```
      *
-     * after
+     * ### after
      *
      * ```
      * <resultMap id="findResult" type="HashMap">

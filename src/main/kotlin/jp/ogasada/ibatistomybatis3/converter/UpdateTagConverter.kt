@@ -7,13 +7,13 @@ object UpdateTagConverter: ITagConverter {
     /**
      * convert `update` tag as follows
      *
-     * before
+     * ### before
      *
      * ```
      * <update id="insert" parameterClass="jp.ogasada.ibatistomybatis3.TestTableEntity" >
      * ```
      *
-     * after
+     * ### after
      *
      * ```
      * <update id="insert" parameterType="jp.ogasada.ibatistomybatis3.TestTableEntity" >

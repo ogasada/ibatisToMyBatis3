@@ -7,13 +7,13 @@ object SelectTagConverter: ITagConverter {
     /**
      * convert `select` tag as follows
      *
-     * before
+     * ### before
      *
      * ```
      * <select id="find" resultClass="String" parameterClass="long">
      * ```
      *
-     * after
+     * ### after
      *
      * ```
      * <select id="find" resultType="String" parameterType="long">

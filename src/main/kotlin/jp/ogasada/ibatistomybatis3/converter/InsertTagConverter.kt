@@ -7,13 +7,13 @@ object InsertTagConverter: ITagConverter {
     /**
      * convert `insert` tag as follows
      *
-     * before
+     * ### before
      *
      * ```
      * <insert id="insert" parameterClass="jp.ogasada.ibatistomybatis3.TestTableEntity" >
      * ```
      *
-     * after
+     * ### after
      *
      * ```
      * <insert id="insert" parameterType="jp.ogasada.ibatistomybatis3.TestTableEntity" >

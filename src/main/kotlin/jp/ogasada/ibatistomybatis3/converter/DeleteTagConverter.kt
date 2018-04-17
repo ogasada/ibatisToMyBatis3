@@ -7,13 +7,13 @@ object DeleteTagConverter: ITagConverter {
     /**
      * convert `delete` tag as follows
      *
-     * before
+     * ### before
      *
      * ```
      * <delete id="insert" parameterClass="jp.ogasada.ibatistomybatis3.TestTableEntity" >
      * ```
      *
-     * after
+     * ### after
      *
      * ```
      * <delete id="insert" parameterType="jp.ogasada.ibatistomybatis3.TestTableEntity" >

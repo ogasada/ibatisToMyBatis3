@@ -7,25 +7,25 @@ object IsEqualTagConverter: ITagConverter {
     /**
      * convert `isEqual` tag as follows
      *
-     * before
+     * ### before
      *
      * ```
      * <isEqual open="and (" property="name" compareValue="foo" close=")">
      *   name = #name#
-     *     <isEqual prepend="or" property="name2" compareProperty="compareName2">
-     *       name = #name2#
-     *     </isEqual>
+     *   <isEqual prepend="or" property="name2" compareProperty="compareName2">
+     *     name = #name2#
+     *   </isEqual>
      * </isEqual>
      * ```
      *
-     * after
+     * ### after
      *
      * ```
      * <if test="name.toString().equals('foo'.toString()))">
      *   and ( name = #name#
-     *     <if test="name2.toString().equals(compareName2.toString()))">
-     *       or name = #name2#
-     *     </if> )
+     *   <if test="name2.toString().equals(compareName2.toString()))">
+     *     or name = #name2#
+     *   </if> )
      * </if>
      * ```
      */

@@ -7,14 +7,14 @@ object SqlMapTagConverter: ITagConverter {
     /**
      * convert `sqlMap` tag as follows
      *
-     * before
+     * ### before
      *
      * ```
      * <sqlMap namespace="jp.ogasada.test">
      * </sqlMap>
      * ```
      *
-     * after
+     * ### after
      *
      * ```
      * <mapper namespace="jp.ogasada.test">

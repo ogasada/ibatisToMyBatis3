@@ -7,14 +7,14 @@ object ResultTagConverter: ITagConverter {
     /**
      * convert `result` tag as follows
      *
-     * before
+     * ### before
      *
      * ```
      * <result property="id" column="id" javaType="int" />
      * <result property="detailList" javaType="List" resultMap="jp.ogasada.ibatistomybatis3.detailResult" />
      * ```
      *
-     * after
+     * ### after
      *
      * ```
      * <result property="id" column="id" javaType="int" />
