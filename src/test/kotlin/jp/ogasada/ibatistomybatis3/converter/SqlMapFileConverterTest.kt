@@ -17,6 +17,7 @@ internal class SqlMapFileConverterTest {
         updateTagTestBeforeConvert(loadedDocument)
         deleteTagTestBeforeConvert(loadedDocument)
         isEmptyTagTestBeforeConvert(loadedDocument)
+        isNotEmptyTagTestBeforeConvert(loadedDocument)
 
         val convertedDocument: Document = SqlMapFileConverter.convert(loadedDocument)
 
@@ -28,6 +29,7 @@ internal class SqlMapFileConverterTest {
         updateTagTestAfterConvert(convertedDocument)
         deleteTagTestAfterConvert(convertedDocument)
         isEmptyTagTestAfterConvert(convertedDocument)
+        isNotEmptyTagTestAfterConvert(convertedDocument)
     }
 
     private fun sqlMapTagTestBeforeConvert(loadedDocument: Document) {
@@ -193,7 +195,7 @@ internal class SqlMapFileConverterTest {
 
     private fun isEmptyTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
-        assertEquals(2, ifTagsAfterConvert.length)
+        assertEquals(4, ifTagsAfterConvert.length)
         assertEquals("name == null or name == ''", attributeValue(convertedDocument, "if", "test", 0))
         assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
@@ -207,6 +209,40 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "property", 1))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 1))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 1))
+    }
+
+    private fun isNotEmptyTagTestBeforeConvert(loadedDocument: Document) {
+        val isNotEmptyTagsBeforeConvert = loadedDocument.getElementsByTagName("isNotEmpty")
+        assertEquals(2, isNotEmptyTagsBeforeConvert.length)
+        assertEquals("and (", attributeValue(loadedDocument, "isNotEmpty", "open", 0))
+        assertEquals(")", attributeValue(loadedDocument, "isNotEmpty", "close", 0))
+        assertEquals("name", attributeValue(loadedDocument, "isNotEmpty", "property", 0))
+        assertEquals("\n      name = #name#\n      \n    ", textContent(loadedDocument, "isNotEmpty", 0))
+        assertFalse(existsAttribute(loadedDocument, "isNotEmpty", "prepend", 0))
+
+        assertEquals("or", attributeValue(loadedDocument, "isNotEmpty", "prepend", 1))
+        assertEquals("name2", attributeValue(loadedDocument, "isNotEmpty", "property", 1))
+        assertEquals("\n        name = #name2#\n      ", textContent(loadedDocument, "isNotEmpty", 1))
+        assertFalse(existsAttribute(loadedDocument, "isNotEmpty", "open", 1))
+        assertFalse(existsAttribute(loadedDocument, "isNotEmpty", "close", 1))
+    }
+
+    private fun isNotEmptyTagTestAfterConvert(convertedDocument: Document) {
+        val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
+        assertEquals(4, ifTagsAfterConvert.length)
+        assertEquals("name != null and name != ''", attributeValue(convertedDocument, "if", "test", 2))
+        assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 2))
+        assertFalse(existsAttribute(convertedDocument, "if", "prepend", 2))
+        assertFalse(existsAttribute(convertedDocument, "if", "property", 2))
+        assertFalse(existsAttribute(convertedDocument, "if", "open", 2))
+        assertFalse(existsAttribute(convertedDocument, "if", "close", 2))
+
+        assertEquals("name2 != null and name2 != ''", attributeValue(convertedDocument, "if", "test", 3))
+        assertEquals("\n         or name = #name2#\n      ", textContent(convertedDocument, "if", 3))
+        assertFalse(existsAttribute(convertedDocument, "if", "prepend", 3))
+        assertFalse(existsAttribute(convertedDocument, "if", "property", 3))
+        assertFalse(existsAttribute(convertedDocument, "if", "open", 3))
+        assertFalse(existsAttribute(convertedDocument, "if", "close", 3))
     }
 
     private fun loadValidDocument(): Document {
@@ -243,6 +279,12 @@ internal class SqlMapFileConverterTest {
                 "      testTable\n" +
                 "    WHERE\n" +
                 "      id = #id#\n" +
+                "    <isNotEmpty open=\"and (\" property=\"name\" close=\")\">\n" +
+                "      name = #name#\n" +
+                "      <isNotEmpty prepend=\"or\" property=\"name2\">\n" +
+                "        name = #name2#\n" +
+                "      </isNotEmpty>\n" +
+                "    </isNotEmpty>\n" +
                 "  </select>\n" +
                 "  <insert id=\"insert\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
                 "    INSERT INTO testTable (\n" +
