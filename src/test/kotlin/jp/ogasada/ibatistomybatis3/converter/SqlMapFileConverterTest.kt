@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.w3c.dom.Document
 
+const val COUNT_OF_IF_TAG = 6
+
 internal class SqlMapFileConverterTest {
     @Test
     fun convert() {
@@ -18,6 +20,7 @@ internal class SqlMapFileConverterTest {
         deleteTagTestBeforeConvert(loadedDocument)
         isEmptyTagTestBeforeConvert(loadedDocument)
         isNotEmptyTagTestBeforeConvert(loadedDocument)
+        isEqualTagTestBeforeConvert(loadedDocument)
 
         val convertedDocument: Document = SqlMapFileConverter.convert(loadedDocument)
 
@@ -30,6 +33,7 @@ internal class SqlMapFileConverterTest {
         deleteTagTestAfterConvert(convertedDocument)
         isEmptyTagTestAfterConvert(convertedDocument)
         isNotEmptyTagTestAfterConvert(convertedDocument)
+        isEqualTagTestAfterConvert(convertedDocument)
     }
 
     private fun sqlMapTagTestBeforeConvert(loadedDocument: Document) {
@@ -195,7 +199,7 @@ internal class SqlMapFileConverterTest {
 
     private fun isEmptyTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
-        assertEquals(4, ifTagsAfterConvert.length)
+        assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
         assertEquals("name == null or name == ''", attributeValue(convertedDocument, "if", "test", 0))
         assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
@@ -229,7 +233,7 @@ internal class SqlMapFileConverterTest {
 
     private fun isNotEmptyTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
-        assertEquals(4, ifTagsAfterConvert.length)
+        assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
         assertEquals("name != null and name != ''", attributeValue(convertedDocument, "if", "test", 2))
         assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 2))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 2))
@@ -245,7 +249,50 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "close", 3))
     }
 
-    private fun loadValidDocument(): Document {
+    private fun isEqualTagTestBeforeConvert(loadedDocument: Document) {
+        val isEqualTagsBeforeConvert = loadedDocument.getElementsByTagName("isEqual")
+        assertEquals(2, isEqualTagsBeforeConvert.length)
+        assertEquals("and (", attributeValue(loadedDocument, "isEqual", "open", 0))
+        assertEquals(")", attributeValue(loadedDocument, "isEqual", "close", 0))
+        assertEquals("name", attributeValue(loadedDocument, "isEqual", "property", 0))
+        assertEquals("foo", attributeValue(loadedDocument, "isEqual", "compareValue", 0))
+        assertEquals("\n      name = #name#\n      \n    ", textContent(loadedDocument, "isEqual", 0))
+        assertFalse(existsAttribute(loadedDocument, "isEqual", "prepend", 0))
+        assertFalse(existsAttribute(loadedDocument, "isEqual", "compareProperty", 0))
+
+        assertEquals("or", attributeValue(loadedDocument, "isEqual", "prepend", 1))
+        assertEquals("name2", attributeValue(loadedDocument, "isEqual", "property", 1))
+        assertEquals("compareName2", attributeValue(loadedDocument, "isEqual", "compareProperty", 1))
+        assertEquals("\n        name = #name2#\n      ", textContent(loadedDocument, "isEqual", 1))
+        assertFalse(existsAttribute(loadedDocument, "isEqual", "open", 1))
+        assertFalse(existsAttribute(loadedDocument, "isEqual", "close", 1))
+        assertFalse(existsAttribute(loadedDocument, "isEqual", "compareValue", 1))
+    }
+
+    private fun isEqualTagTestAfterConvert(convertedDocument: Document) {
+        val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
+        assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
+        assertEquals("name.toString().equals('foo'.toString()))", attributeValue(convertedDocument, "if", "test", 4))
+        assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 4))
+        assertFalse(existsAttribute(convertedDocument, "if", "prepend", 4))
+        assertFalse(existsAttribute(convertedDocument, "if", "property", 4))
+        assertFalse(existsAttribute(convertedDocument, "if", "compareProperty", 4))
+        assertFalse(existsAttribute(convertedDocument, "if", "compareValue", 4))
+        assertFalse(existsAttribute(convertedDocument, "if", "open", 4))
+        assertFalse(existsAttribute(convertedDocument, "if", "close", 4))
+
+        assertEquals("name2.toString().equals(compareName2.toString()))", attributeValue(convertedDocument, "if", "test", 5))
+        assertEquals("\n         or name = #name2#\n      ", textContent(convertedDocument, "if", 5))
+        assertFalse(existsAttribute(convertedDocument, "if", "prepend", 5))
+        assertFalse(existsAttribute(convertedDocument, "if", "property", 5))
+        assertFalse(existsAttribute(convertedDocument, "if", "compareProperty", 5))
+        assertFalse(existsAttribute(convertedDocument, "if", "compareValue", 5))
+        assertFalse(existsAttribute(convertedDocument, "if", "open", 5))
+        assertFalse(existsAttribute(convertedDocument, "if", "close", 5))
+    }
+
+
+        private fun loadValidDocument(): Document {
         val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<!DOCTYPE sqlMap\n" +
                 "  PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\"\n" +
@@ -285,6 +332,12 @@ internal class SqlMapFileConverterTest {
                 "        name = #name2#\n" +
                 "      </isNotEmpty>\n" +
                 "    </isNotEmpty>\n" +
+                "    <isEqual open=\"and (\" property=\"name\" compareValue=\"foo\" close=\")\">\n" +
+                "      name = #name#\n" +
+                "      <isEqual prepend=\"or\" property=\"name2\" compareProperty=\"compareName2\">\n" +
+                "        name = #name2#\n" +
+                "      </isEqual>\n" +
+                "    </isEqual>\n" +
                 "  </select>\n" +
                 "  <insert id=\"insert\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
                 "    INSERT INTO testTable (\n" +
