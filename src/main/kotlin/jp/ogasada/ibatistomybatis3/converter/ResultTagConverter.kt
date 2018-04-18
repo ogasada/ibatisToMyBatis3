@@ -18,11 +18,12 @@ object ResultTagConverter: ITagConverter {
      *
      * ```
      * <result property="id" column="id" javaType="int" />
-     * <result property="detailList" javaType="List" resultMap="detailResult" />
+     * <collection property="detailList" javaType="List" resultMap="detailResult" />
      * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
-            .convertAttributeValue("result", "resultMap") { it.takeLastWhile { it != '.' } }
+                .convertAttributeValue("result", "resultMap") { it.takeLastWhile { it != '.' } }
+                .convertTagName("result", "collection") { it.hasAttribute("resultMap") }
 }
 
 
