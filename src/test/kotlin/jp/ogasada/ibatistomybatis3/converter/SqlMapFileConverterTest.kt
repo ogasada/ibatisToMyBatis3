@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.w3c.dom.Document
 
-const val COUNT_OF_IF_TAG = 18
+const val COUNT_OF_IF_TAG = 20
 
 internal class SqlMapFileConverterTest {
     @Test
@@ -27,6 +27,7 @@ internal class SqlMapFileConverterTest {
         isLessEqualTagTestBeforeConvert(loadedDocument)
         isLessThanTagTestBeforeConvert(loadedDocument)
         isNullTagTestBeforeConvert(loadedDocument)
+        isNotNullTagTestBeforeConvert(loadedDocument)
 
         val convertedDocument: Document = SqlMapFileConverter.convert(loadedDocument)
 
@@ -46,6 +47,7 @@ internal class SqlMapFileConverterTest {
         isLessEqualTagTestAfterConvert(convertedDocument)
         isLessThanTagTestAfterConvert(convertedDocument)
         isNullTagTestAfterConvert(convertedDocument)
+        isNotNullTagTestAfterConvert(convertedDocument)
     }
 
     private fun sqlMapTagTestBeforeConvert(loadedDocument: Document) {
@@ -547,6 +549,40 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "close", 17))
     }
 
+    private fun isNotNullTagTestBeforeConvert(loadedDocument: Document) {
+        val isNotNullTagsBeforeConvert = loadedDocument.getElementsByTagName("isNotNull")
+        assertEquals(2, isNotNullTagsBeforeConvert.length)
+        assertEquals("and (", attributeValue(loadedDocument, "isNotNull", "open", 0))
+        assertEquals(")", attributeValue(loadedDocument, "isNotNull", "close", 0))
+        assertEquals("name", attributeValue(loadedDocument, "isNotNull", "property", 0))
+        assertEquals("\n      name = #name#\n      \n    ", textContent(loadedDocument, "isNotNull", 0))
+        assertFalse(existsAttribute(loadedDocument, "isNotNull", "prepend", 0))
+
+        assertEquals("or", attributeValue(loadedDocument, "isNotNull", "prepend", 1))
+        assertEquals("name2", attributeValue(loadedDocument, "isNotNull", "property", 1))
+        assertEquals("\n        name = #name2#\n      ", textContent(loadedDocument, "isNotNull", 1))
+        assertFalse(existsAttribute(loadedDocument, "isNotNull", "open", 1))
+        assertFalse(existsAttribute(loadedDocument, "isNotNull", "close", 1))
+    }
+
+    private fun isNotNullTagTestAfterConvert(convertedDocument: Document) {
+        val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
+        assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
+        assertEquals("name != null", attributeValue(convertedDocument, "if", "test", 18))
+        assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 18))
+        assertFalse(existsAttribute(convertedDocument, "if", "prepend", 18))
+        assertFalse(existsAttribute(convertedDocument, "if", "property", 18))
+        assertFalse(existsAttribute(convertedDocument, "if", "open", 18))
+        assertFalse(existsAttribute(convertedDocument, "if", "close", 18))
+
+        assertEquals("name2 != null", attributeValue(convertedDocument, "if", "test", 19))
+        assertEquals("\n         or name = #name2#\n      ", textContent(convertedDocument, "if", 19))
+        assertFalse(existsAttribute(convertedDocument, "if", "prepend", 19))
+        assertFalse(existsAttribute(convertedDocument, "if", "property", 19))
+        assertFalse(existsAttribute(convertedDocument, "if", "open", 19))
+        assertFalse(existsAttribute(convertedDocument, "if", "close", 19))
+    }
+
     private fun loadValidDocument(): Document {
         val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<!DOCTYPE sqlMap\n" +
@@ -628,6 +664,12 @@ internal class SqlMapFileConverterTest {
                 "        name = #name2#\n" +
                 "      </isNull>\n" +
                 "    </isNull>\n" +
+                "    <isNotNull open=\"and (\" property=\"name\" close=\")\">\n" +
+                "      name = #name#\n" +
+                "      <isNotNull prepend=\"or\" property=\"name2\">\n" +
+                "        name = #name2#\n" +
+                "      </isNotNull>\n" +
+                "    </isNotNull>\n" +
                 "  </select>\n" +
                 "  <insert id=\"insert\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
                 "    INSERT INTO testTable (\n" +
