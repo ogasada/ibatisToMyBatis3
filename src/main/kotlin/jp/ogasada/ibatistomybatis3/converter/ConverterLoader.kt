@@ -14,7 +14,8 @@ object ConverterLoader {
             IsNotEmptyTagConverter,
             IsEqualTagConverter,
             IsNotEqualTagConverter,
-            IsGreaterEqualTagConverter)
+            IsGreaterEqualTagConverter,
+            IsGreaterThanTagConverter)
 
     fun load(): List<ITagConverter> = converters
 }
