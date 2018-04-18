@@ -105,16 +105,15 @@ internal class SqlMapFileConverterTest {
     private fun resultTagTestAfterConvert(convertedDocument: Document) {
         assertEquals("id", attributeValue(convertedDocument, "result", "property", 0))
         assertEquals("name", attributeValue(convertedDocument, "result", "property", 1))
-        assertEquals("detailList", attributeValue(convertedDocument, "result", "property", 2))
         assertEquals("id", attributeValue(convertedDocument, "result", "column", 0))
         assertEquals("name", attributeValue(convertedDocument, "result", "column", 1))
         assertEquals("int", attributeValue(convertedDocument, "result", "javaType", 0))
         assertEquals("String", attributeValue(convertedDocument, "result", "javaType", 1))
-        assertEquals("List", attributeValue(convertedDocument, "result", "javaType", 2))
         assertFalse(existsAttribute(convertedDocument, "result", "resultMap", 0))
         assertFalse(existsAttribute(convertedDocument, "result", "resultMap", 1))
-        assertTrue(existsAttribute(convertedDocument, "result", "resultMap", 2))
-        assertEquals("detailResult", attributeValue(convertedDocument, "result", "resultMap", 2))
+        assertEquals("detailList", attributeValue(convertedDocument, "collection", "property", 0))
+        assertEquals("List", attributeValue(convertedDocument, "collection", "javaType", 0))
+        assertEquals("detailResult", attributeValue(convertedDocument, "collection", "resultMap", 0))
     }
 
     private fun selectTagTestBeforeConvert(loadedDocument: Document) {
