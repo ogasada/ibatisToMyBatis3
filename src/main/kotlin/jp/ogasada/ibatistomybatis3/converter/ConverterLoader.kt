@@ -20,7 +20,8 @@ object ConverterLoader {
             IsLessThanTagConverter,
             IsNullTagConverter,
             IsNotNullTagConverter,
-            IsPropertyAvailableTagConverter)
+            IsPropertyAvailableTagConverter,
+            IsNotPropertyAvailableTagConverter)
 
     fun load(): List<ITagConverter> = converters
 }

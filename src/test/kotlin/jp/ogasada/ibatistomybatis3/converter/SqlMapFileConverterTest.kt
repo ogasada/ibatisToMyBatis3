@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.w3c.dom.Document
 
-const val COUNT_OF_IF_TAG = 22
+const val COUNT_OF_IF_TAG = 24
 
 internal class SqlMapFileConverterTest {
     @Test
@@ -29,6 +29,7 @@ internal class SqlMapFileConverterTest {
         isNullTagTestBeforeConvert(loadedDocument)
         isNotNullTagTestBeforeConvert(loadedDocument)
         isPropertyAvailableTagTestBeforeConvert(loadedDocument)
+        isNotPropertyAvailableTagTestBeforeConvert(loadedDocument)
 
         val convertedDocument: Document = SqlMapFileConverter.convert(loadedDocument)
 
@@ -50,6 +51,7 @@ internal class SqlMapFileConverterTest {
         isNullTagTestAfterConvert(convertedDocument)
         isNotNullTagTestAfterConvert(convertedDocument)
         isPropertyAvailableTagTestAfterConvert(convertedDocument)
+        isNotPropertyAvailableTagTestAfterConvert(convertedDocument)
     }
 
     private fun sqlMapTagTestBeforeConvert(loadedDocument: Document) {
@@ -619,6 +621,40 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "close", 21))
     }
 
+    private fun isNotPropertyAvailableTagTestBeforeConvert(loadedDocument: Document) {
+        val isNotPropertyAvailableTagsBeforeConvert = loadedDocument.getElementsByTagName("isNotPropertyAvailable")
+        assertEquals(2, isNotPropertyAvailableTagsBeforeConvert.length)
+        assertEquals("and (", attributeValue(loadedDocument, "isNotPropertyAvailable", "open", 0))
+        assertEquals(")", attributeValue(loadedDocument, "isNotPropertyAvailable", "close", 0))
+        assertEquals("name", attributeValue(loadedDocument, "isNotPropertyAvailable", "property", 0))
+        assertEquals("\n      name = #name3#\n      \n    ", textContent(loadedDocument, "isNotPropertyAvailable", 0))
+        assertFalse(existsAttribute(loadedDocument, "isNotPropertyAvailable", "prepend", 0))
+
+        assertEquals("or", attributeValue(loadedDocument, "isNotPropertyAvailable", "prepend", 1))
+        assertEquals("name2", attributeValue(loadedDocument, "isNotPropertyAvailable", "property", 1))
+        assertEquals("\n        name = #name4#\n      ", textContent(loadedDocument, "isNotPropertyAvailable", 1))
+        assertFalse(existsAttribute(loadedDocument, "isNotPropertyAvailable", "open", 1))
+        assertFalse(existsAttribute(loadedDocument, "isNotPropertyAvailable", "close", 1))
+    }
+
+    private fun isNotPropertyAvailableTagTestAfterConvert(convertedDocument: Document) {
+        val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
+        assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
+        assertEquals("!_parameter.containsKey('name')", attributeValue(convertedDocument, "if", "test", 22))
+        assertEquals("\n       and ( name = #name3#\n       ) \n    ", textContent(convertedDocument, "if", 22))
+        assertFalse(existsAttribute(convertedDocument, "if", "prepend", 22))
+        assertFalse(existsAttribute(convertedDocument, "if", "property", 22))
+        assertFalse(existsAttribute(convertedDocument, "if", "open", 22))
+        assertFalse(existsAttribute(convertedDocument, "if", "close", 22))
+
+        assertEquals("!_parameter.containsKey('name2')", attributeValue(convertedDocument, "if", "test", 23))
+        assertEquals("\n         or name = #name4#\n      ", textContent(convertedDocument, "if", 23))
+        assertFalse(existsAttribute(convertedDocument, "if", "prepend", 23))
+        assertFalse(existsAttribute(convertedDocument, "if", "property", 23))
+        assertFalse(existsAttribute(convertedDocument, "if", "open", 23))
+        assertFalse(existsAttribute(convertedDocument, "if", "close", 23))
+    }
+
     private fun loadValidDocument(): Document {
         val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<!DOCTYPE sqlMap\n" +
@@ -712,6 +748,12 @@ internal class SqlMapFileConverterTest {
                 "        name = #name2#\n" +
                 "      </isPropertyAvailable>\n" +
                 "    </isPropertyAvailable>\n" +
+                "    <isNotPropertyAvailable open=\"and (\" property=\"name\" close=\")\">\n" +
+                "      name = #name3#\n" +
+                "      <isNotPropertyAvailable prepend=\"or\" property=\"name2\">\n" +
+                "        name = #name4#\n" +
+                "      </isNotPropertyAvailable>\n" +
+                "    </isNotPropertyAvailable>\n" +
                 "  </select>\n" +
                 "  <insert id=\"insert\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
                 "    INSERT INTO testTable (\n" +
