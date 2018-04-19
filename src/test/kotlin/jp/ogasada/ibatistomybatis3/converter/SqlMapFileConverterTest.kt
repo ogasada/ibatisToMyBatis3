@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.w3c.dom.Document
 
-const val COUNT_OF_IF_TAG = 24
+const val COUNT_OF_IF_TAG = 28
 
 internal class SqlMapFileConverterTest {
     @Test
@@ -30,6 +30,7 @@ internal class SqlMapFileConverterTest {
         isNotNullTagTestBeforeConvert(loadedDocument)
         isPropertyAvailableTagTestBeforeConvert(loadedDocument)
         isNotPropertyAvailableTagTestBeforeConvert(loadedDocument)
+        dynamicTagTestBeforeConvert(loadedDocument)
 
         val convertedDocument: Document = SqlMapFileConverter.convert(loadedDocument)
 
@@ -52,6 +53,7 @@ internal class SqlMapFileConverterTest {
         isNotNullTagTestAfterConvert(convertedDocument)
         isPropertyAvailableTagTestAfterConvert(convertedDocument)
         isNotPropertyAvailableTagTestAfterConvert(convertedDocument)
+        dynamicTagTestAfterConvert(convertedDocument)
     }
 
     private fun sqlMapTagTestBeforeConvert(loadedDocument: Document) {
@@ -118,7 +120,7 @@ internal class SqlMapFileConverterTest {
 
     private fun selectTagTestBeforeConvert(loadedDocument: Document) {
         val selectTagsBeforeConvert = loadedDocument.getElementsByTagName("select")
-        assertEquals(2, selectTagsBeforeConvert.length)
+        assertEquals(3, selectTagsBeforeConvert.length)
         assertEquals("find", attributeValue(loadedDocument, "select", "id", 0))
         assertEquals("findResult", attributeValue(loadedDocument, "select", "resultMap", 0))
         assertEquals("long", attributeValue(loadedDocument, "select", "parameterClass", 0))
@@ -135,7 +137,7 @@ internal class SqlMapFileConverterTest {
 
     private fun selectTagTestAfterConvert(convertedDocument: Document) {
         val selectTagsAfterConvert = convertedDocument.getElementsByTagName("select")
-        assertEquals(2, selectTagsAfterConvert.length)
+        assertEquals(3, selectTagsAfterConvert.length)
         assertEquals("find", attributeValue(convertedDocument, "select", "id", 0))
         assertEquals("findResult", attributeValue(convertedDocument, "select", "resultMap", 0))
         assertEquals("long", attributeValue(convertedDocument, "select", "parameterType", 0))
@@ -268,7 +270,7 @@ internal class SqlMapFileConverterTest {
 
     private fun isEqualTagTestBeforeConvert(loadedDocument: Document) {
         val isEqualTagsBeforeConvert = loadedDocument.getElementsByTagName("isEqual")
-        assertEquals(2, isEqualTagsBeforeConvert.length)
+        assertEquals(4, isEqualTagsBeforeConvert.length)
         assertEquals("and (", attributeValue(loadedDocument, "isEqual", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "isEqual", "close", 0))
         assertEquals("name", attributeValue(loadedDocument, "isEqual", "property", 0))
@@ -554,7 +556,7 @@ internal class SqlMapFileConverterTest {
 
     private fun isNotNullTagTestBeforeConvert(loadedDocument: Document) {
         val isNotNullTagsBeforeConvert = loadedDocument.getElementsByTagName("isNotNull")
-        assertEquals(2, isNotNullTagsBeforeConvert.length)
+        assertEquals(4, isNotNullTagsBeforeConvert.length)
         assertEquals("and (", attributeValue(loadedDocument, "isNotNull", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "isNotNull", "close", 0))
         assertEquals("name", attributeValue(loadedDocument, "isNotNull", "property", 0))
@@ -652,6 +654,31 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "property", 23))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 23))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 23))
+    }
+
+    private fun dynamicTagTestBeforeConvert(loadedDocument: Document) {
+        val dynamicTagsBeforeConvert = loadedDocument.getElementsByTagName("dynamic")
+        assertEquals(2, dynamicTagsBeforeConvert.length)
+        assertEquals("where", attributeValue(loadedDocument, "dynamic", "prepend", 0))
+        assertEquals("set", attributeValue(loadedDocument, "dynamic", "prepend", 1))
+    }
+
+    private fun dynamicTagTestAfterConvert(convertedDocument: Document) {
+        val trimTagsAfterConvert = convertedDocument.getElementsByTagName("trim")
+        assertEquals(2, trimTagsAfterConvert.length)
+        assertEquals("where", attributeValue(convertedDocument, "trim", "prefix", 0))
+        assertEquals("AND |OR ", attributeValue(convertedDocument, "trim", "prefixOverrides", 0))
+
+        assertEquals("set", attributeValue(convertedDocument, "trim", "prefix", 1))
+        assertEquals(", |AND |OR ", attributeValue(convertedDocument, "trim", "prefixOverrides", 1))
+
+        assertFalse(existsAttribute(convertedDocument, "trim", "prepend", 0))
+        assertFalse(existsAttribute(convertedDocument, "trim", "open", 0))
+        assertFalse(existsAttribute(convertedDocument, "trim", "close", 0))
+
+        assertFalse(existsAttribute(convertedDocument, "trim", "prepend", 1))
+        assertFalse(existsAttribute(convertedDocument, "trim", "open", 1))
+        assertFalse(existsAttribute(convertedDocument, "trim", "close", 1))
     }
 
     private fun loadValidDocument(): Document {
@@ -754,6 +781,21 @@ internal class SqlMapFileConverterTest {
                 "      </isNotPropertyAvailable>\n" +
                 "    </isNotPropertyAvailable>\n" +
                 "  </select>\n" +
+                "  <select id=\"find3\" resultMap=\"findResult\" parameterClass=\"long\">\n" +
+                "    SELECT\n" +
+                "      id,\n" +
+                "      name\n" +
+                "    FROM\n" +
+                "      testTable\n" +
+                "    <dynamic prepend=\"where\">\n" +
+                "      <isEqual prepend=\"and\" property=\"id\" compareValue=\"1\">\n" +
+                "        id = #id#\n" +
+                "      </isEqual>\n" +
+                "      <isEqual prepend=\"and\" property=\"name\" compareValue=\"foo\">\n" +
+                "        name = #name#\n" +
+                "      </isEqual>\n" +
+                "    </dynamic>\n" +
+                "  </select>\n" +
                 "  <insert id=\"insert\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
                 "    INSERT INTO testTable (\n" +
                 "      id,\n" +
@@ -763,18 +805,25 @@ internal class SqlMapFileConverterTest {
                 "      #id#,\n" +
                 "      #name#\n" +
                 "    )\n" +
-                "  </insert>" +
+                "  </insert>\n" +
                 "  <update id=\"update\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
-                "    UPDATE testTable SET\n" +
-                "      name = #name# \n" +
-                "    WHERE \n" +
-                "      id = #id#\n" +
-                "  </update>" +
+                "    UPDATE testTable\n" +
+                "    <dynamic prepend=\"set\">\n" +
+                "      <isNotNull prepend=\",\" property=\"id\">\n" +
+                "        id = #id#\n" +
+                "      </isNotNull>\n" +
+                "      <isNotNull prepend=\",\" property=\"name\">\n" +
+                "        name = #name#\n" +
+                "      </isNotNull>\n" +
+                "    </dynamic>\n" +
+                "    WHERE\n" +
+                "      key = #key#\n" +
+                "  </update>\n" +
                 "  <delete id=\"delete\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
                 "    DELETE FROM testTable \n" +
                 "    WHERE \n" +
                 "      id = #id#\n" +
-                "  </delete>" +
+                "  </delete>\n" +
                 "</sqlMap>\n"
 
         return loadXML(xml)

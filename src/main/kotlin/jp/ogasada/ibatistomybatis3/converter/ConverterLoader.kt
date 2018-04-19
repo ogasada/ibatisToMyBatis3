@@ -3,6 +3,7 @@ package jp.ogasada.ibatistomybatis3.converter
 object ConverterLoader {
 
     private val converters = listOf(
+            DynamicTagConverter,
             SqlMapTagConverter,
             ResultMapTagConverter,
             ResultTagConverter,
