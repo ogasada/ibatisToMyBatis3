@@ -11,11 +11,11 @@ internal class IsNotNullTagConverterTest {
 
         val isNotNullTagsBeforeConvert = loadedDocument.getElementsByTagName("isNotNull")
         assertEquals(2, isNotNullTagsBeforeConvert.length)
-        assertEquals("and (", attributeValue(loadedDocument, "isNotNull", "open", 0))
+        assertEquals("and", attributeValue(loadedDocument, "isNotNull", "prepend", 0))
+        assertEquals("(", attributeValue(loadedDocument, "isNotNull", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "isNotNull", "close", 0))
         assertEquals("name", attributeValue(loadedDocument, "isNotNull", "property", 0))
         assertEquals("\n      name = #name#\n      \n    ", textContent(loadedDocument, "isNotNull", 0))
-        assertFalse(existsAttribute(loadedDocument, "isNotNull", "prepend", 0))
 
         assertEquals("or", attributeValue(loadedDocument, "isNotNull", "prepend", 1))
         assertEquals("name2", attributeValue(loadedDocument, "isNotNull", "property", 1))
@@ -28,7 +28,7 @@ internal class IsNotNullTagConverterTest {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(2, ifTagsAfterConvert.length)
         assertEquals("name != null", attributeValue(convertedDocument, "if", "test", 0))
-        assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
+        assertEquals("\n        and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 0))
@@ -62,7 +62,7 @@ internal class IsNotNullTagConverterTest {
                 "      testTable\n" +
                 "    WHERE\n" +
                 "      id = #id#\n" +
-                "    <isNotNull open=\"and (\" property=\"name\" close=\")\">\n" +
+                "    <isNotNull prepend=\"and\" open=\"(\" property=\"name\" close=\")\">\n" +
                 "      name = #name#\n" +
                 "      <isNotNull prepend=\"or\" property=\"name2\">\n" +
                 "        name = #name2#\n" +
