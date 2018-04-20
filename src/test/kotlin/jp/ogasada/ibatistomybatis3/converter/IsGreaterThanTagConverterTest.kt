@@ -11,12 +11,12 @@ internal class IsGreaterThanTagConverterTest {
 
         val isGreaterThanTagsBeforeConvert = loadedDocument.getElementsByTagName("isGreaterThan")
         assertEquals(2, isGreaterThanTagsBeforeConvert.length)
-        assertEquals("and (", attributeValue(loadedDocument, "isGreaterThan", "open", 0))
+        assertEquals("and", attributeValue(loadedDocument, "isGreaterThan", "prepend", 0))
+        assertEquals("(", attributeValue(loadedDocument, "isGreaterThan", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "isGreaterThan", "close", 0))
         assertEquals("id", attributeValue(loadedDocument, "isGreaterThan", "property", 0))
         assertEquals("1", attributeValue(loadedDocument, "isGreaterThan", "compareValue", 0))
         assertEquals("\n      id = #id#\n      \n    ", textContent(loadedDocument, "isGreaterThan", 0))
-        assertFalse(existsAttribute(loadedDocument, "isGreaterThan", "prepend", 0))
         assertFalse(existsAttribute(loadedDocument, "isGreaterThan", "compareProperty", 0))
 
         assertEquals("or", attributeValue(loadedDocument, "isGreaterThan", "prepend", 1))
@@ -32,7 +32,7 @@ internal class IsGreaterThanTagConverterTest {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(2, ifTagsAfterConvert.length)
         assertEquals("id <![CDATA[>]]> 1", attributeValue(convertedDocument, "if", "test", 0))
-        assertEquals("\n       and ( id = #id#\n       ) \n    ", textContent(convertedDocument, "if", 0))
+        assertEquals("\n        and ( id = #id#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "compareProperty", 0))
@@ -70,7 +70,7 @@ internal class IsGreaterThanTagConverterTest {
                 "      testTable\n" +
                 "    WHERE\n" +
                 "      name = #name#\n" +
-                "    <isGreaterThan open=\"and (\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
+                "    <isGreaterThan prepend=\"and\" open=\"(\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
                 "      id = #id#\n" +
                 "      <isGreaterThan prepend=\"or\" property=\"id2\" compareProperty=\"compareId2\">\n" +
                 "        id = #id2#\n" +
