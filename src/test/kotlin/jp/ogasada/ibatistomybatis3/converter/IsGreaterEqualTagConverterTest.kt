@@ -11,12 +11,12 @@ internal class IsGreaterEqualTagConverterTest {
 
         val isGreaterEqualTagsBeforeConvert = loadedDocument.getElementsByTagName("isGreaterEqual")
         assertEquals(2, isGreaterEqualTagsBeforeConvert.length)
-        assertEquals("and (", attributeValue(loadedDocument, "isGreaterEqual", "open", 0))
+        assertEquals("and", attributeValue(loadedDocument, "isGreaterEqual", "prepend", 0))
+        assertEquals("(", attributeValue(loadedDocument, "isGreaterEqual", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "isGreaterEqual", "close", 0))
         assertEquals("id", attributeValue(loadedDocument, "isGreaterEqual", "property", 0))
         assertEquals("1", attributeValue(loadedDocument, "isGreaterEqual", "compareValue", 0))
         assertEquals("\n      id = #id#\n      \n    ", textContent(loadedDocument, "isGreaterEqual", 0))
-        assertFalse(existsAttribute(loadedDocument, "isGreaterEqual", "prepend", 0))
         assertFalse(existsAttribute(loadedDocument, "isGreaterEqual", "compareProperty", 0))
 
         assertEquals("or", attributeValue(loadedDocument, "isGreaterEqual", "prepend", 1))
@@ -32,7 +32,7 @@ internal class IsGreaterEqualTagConverterTest {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(2, ifTagsAfterConvert.length)
         assertEquals("id <![CDATA[>=]]> 1", attributeValue(convertedDocument, "if", "test", 0))
-        assertEquals("\n       and ( id = #id#\n       ) \n    ", textContent(convertedDocument, "if", 0))
+        assertEquals("\n        and ( id = #id#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "compareProperty", 0))
@@ -70,7 +70,7 @@ internal class IsGreaterEqualTagConverterTest {
                 "      testTable\n" +
                 "    WHERE\n" +
                 "      name = #name#\n" +
-                "    <isGreaterEqual open=\"and (\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
+                "    <isGreaterEqual prepend=\"and\" open=\"(\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
                 "      id = #id#\n" +
                 "      <isGreaterEqual prepend=\"or\" property=\"id2\" compareProperty=\"compareId2\">\n" +
                 "        id = #id2#\n" +
