@@ -30,8 +30,8 @@ object IsNotPropertyAvailableTagConverter: ITagConverter {
      * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
-            .prependAttributeValueToTextContent("isNotPropertyAvailable", "prepend")
             .prependAttributeValueToTextContent("isNotPropertyAvailable", "open")
+            .prependAttributeValueToTextContent("isNotPropertyAvailable", "prepend")
             .appendAttributeValueToTextContent("isNotPropertyAvailable", "close")
             .createNewAttribute("isNotPropertyAvailable", "test") { node ->
                 val attributeValue = node.getAttribute("property")
