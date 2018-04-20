@@ -11,11 +11,11 @@ internal class IsEmptyTagConverterTest {
 
         val isEmptyTagsBeforeConvert = loadedDocument.getElementsByTagName("isEmpty")
         assertEquals(2, isEmptyTagsBeforeConvert.length)
-        assertEquals("and (", attributeValue(loadedDocument, "isEmpty", "open", 0))
+        assertEquals("and", attributeValue(loadedDocument, "isEmpty", "prepend", 0))
+        assertEquals("(", attributeValue(loadedDocument, "isEmpty", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "isEmpty", "close", 0))
         assertEquals("name", attributeValue(loadedDocument, "isEmpty", "property", 0))
         assertEquals("\n      name = #name#\n      \n    ", textContent(loadedDocument, "isEmpty", 0))
-        assertFalse(existsAttribute(loadedDocument, "isEmpty", "prepend", 0))
 
         assertEquals("or", attributeValue(loadedDocument, "isEmpty", "prepend", 1))
         assertEquals("name2", attributeValue(loadedDocument, "isEmpty", "property", 1))
@@ -28,7 +28,7 @@ internal class IsEmptyTagConverterTest {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(2, ifTagsAfterConvert.length)
         assertEquals("name == null or name == ''", attributeValue(convertedDocument, "if", "test", 0))
-        assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
+        assertEquals("\n        and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 0))
@@ -62,7 +62,7 @@ internal class IsEmptyTagConverterTest {
                 "      testTable\n" +
                 "    WHERE\n" +
                 "      id = #id#\n" +
-                "    <isEmpty open=\"and (\" property=\"name\" close=\")\">\n" +
+                "    <isEmpty prepend=\"and\" open=\"(\" property=\"name\" close=\")\">\n" +
                 "      name = #name#\n" +
                 "      <isEmpty prepend=\"or\" property=\"name2\">\n" +
                 "        name = #name2#\n" +
