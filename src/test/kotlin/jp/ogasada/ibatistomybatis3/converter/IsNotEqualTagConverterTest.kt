@@ -11,12 +11,12 @@ internal class IsNotEqualTagConverterTest {
 
         val isNotEqualTagsBeforeConvert = loadedDocument.getElementsByTagName("isNotEqual")
         assertEquals(2, isNotEqualTagsBeforeConvert.length)
-        assertEquals("and (", attributeValue(loadedDocument, "isNotEqual", "open", 0))
+        assertEquals("and", attributeValue(loadedDocument, "isNotEqual", "prepend", 0))
+        assertEquals("(", attributeValue(loadedDocument, "isNotEqual", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "isNotEqual", "close", 0))
         assertEquals("name", attributeValue(loadedDocument, "isNotEqual", "property", 0))
         assertEquals("foo", attributeValue(loadedDocument, "isNotEqual", "compareValue", 0))
         assertEquals("\n      name = #name#\n      \n    ", textContent(loadedDocument, "isNotEqual", 0))
-        assertFalse(existsAttribute(loadedDocument, "isNotEqual", "prepend", 0))
         assertFalse(existsAttribute(loadedDocument, "isNotEqual", "compareProperty", 0))
 
         assertEquals("or", attributeValue(loadedDocument, "isNotEqual", "prepend", 1))
@@ -32,7 +32,7 @@ internal class IsNotEqualTagConverterTest {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(2, ifTagsAfterConvert.length)
         assertEquals("!name.toString().equals('foo'.toString()))", attributeValue(convertedDocument, "if", "test", 0))
-        assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
+        assertEquals("\n        and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "compareProperty", 0))
@@ -70,7 +70,7 @@ internal class IsNotEqualTagConverterTest {
                 "      testTable\n" +
                 "    WHERE\n" +
                 "      id = #id#\n" +
-                "    <isNotEqual open=\"and (\" property=\"name\" compareValue=\"foo\" close=\")\">\n" +
+                "    <isNotEqual prepend=\"and\" open=\"(\" property=\"name\" compareValue=\"foo\" close=\")\">\n" +
                 "      name = #name#\n" +
                 "      <isNotEqual prepend=\"or\" property=\"name2\" compareProperty=\"compareName2\">\n" +
                 "        name = #name2#\n" +
