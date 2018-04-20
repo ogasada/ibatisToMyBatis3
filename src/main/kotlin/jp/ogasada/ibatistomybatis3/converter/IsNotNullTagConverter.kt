@@ -30,8 +30,8 @@ object IsNotNullTagConverter: ITagConverter {
      * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
-            .prependAttributeValueToTextContent("isNotNull", "prepend")
             .prependAttributeValueToTextContent("isNotNull", "open")
+            .prependAttributeValueToTextContent("isNotNull", "prepend")
             .appendAttributeValueToTextContent("isNotNull", "close")
             .createNewAttribute("isNotNull", "test") { node ->
                 val attributeValue = node.getAttribute("property")
