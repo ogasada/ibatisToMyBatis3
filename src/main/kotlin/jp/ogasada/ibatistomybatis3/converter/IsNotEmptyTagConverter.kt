@@ -30,8 +30,8 @@ object IsNotEmptyTagConverter: ITagConverter {
      * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
-            .prependAttributeValueToTextContent("isNotEmpty", "prepend")
             .prependAttributeValueToTextContent("isNotEmpty", "open")
+            .prependAttributeValueToTextContent("isNotEmpty", "prepend")
             .appendAttributeValueToTextContent("isNotEmpty", "close")
             .createNewAttribute("isNotEmpty", "test") { node ->
                 val attributeValue = node.getAttribute("property")
