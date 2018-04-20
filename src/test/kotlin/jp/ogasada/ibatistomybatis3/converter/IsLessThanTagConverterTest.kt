@@ -11,12 +11,12 @@ internal class IsLessThanTagConverterTest {
 
         val isLessThanTagsBeforeConvert = loadedDocument.getElementsByTagName("isLessThan")
         assertEquals(2, isLessThanTagsBeforeConvert.length)
-        assertEquals("and (", attributeValue(loadedDocument, "isLessThan", "open", 0))
+        assertEquals("and", attributeValue(loadedDocument, "isLessThan", "prepend", 0))
+        assertEquals("(", attributeValue(loadedDocument, "isLessThan", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "isLessThan", "close", 0))
         assertEquals("id", attributeValue(loadedDocument, "isLessThan", "property", 0))
         assertEquals("1", attributeValue(loadedDocument, "isLessThan", "compareValue", 0))
         assertEquals("\n      id = #id#\n      \n    ", textContent(loadedDocument, "isLessThan", 0))
-        assertFalse(existsAttribute(loadedDocument, "isLessThan", "prepend", 0))
         assertFalse(existsAttribute(loadedDocument, "isLessThan", "compareProperty", 0))
 
         assertEquals("or", attributeValue(loadedDocument, "isLessThan", "prepend", 1))
@@ -32,7 +32,7 @@ internal class IsLessThanTagConverterTest {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(2, ifTagsAfterConvert.length)
         assertEquals("id <![CDATA[<]]> 1", attributeValue(convertedDocument, "if", "test", 0))
-        assertEquals("\n       and ( id = #id#\n       ) \n    ", textContent(convertedDocument, "if", 0))
+        assertEquals("\n        and ( id = #id#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "compareProperty", 0))
@@ -70,7 +70,7 @@ internal class IsLessThanTagConverterTest {
                 "      testTable\n" +
                 "    WHERE\n" +
                 "      name = #name#\n" +
-                "    <isLessThan open=\"and (\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
+                "    <isLessThan prepend=\"and\" open=\"(\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
                 "      id = #id#\n" +
                 "      <isLessThan prepend=\"or\" property=\"id2\" compareProperty=\"compareId2\">\n" +
                 "        id = #id2#\n" +
