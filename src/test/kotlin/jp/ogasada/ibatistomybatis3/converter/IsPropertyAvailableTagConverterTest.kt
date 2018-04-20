@@ -11,11 +11,11 @@ internal class IsPropertyAvailableTagConverterTest {
 
         val isPropertyAvailableTagsBeforeConvert = loadedDocument.getElementsByTagName("isPropertyAvailable")
         assertEquals(2, isPropertyAvailableTagsBeforeConvert.length)
-        assertEquals("and (", attributeValue(loadedDocument, "isPropertyAvailable", "open", 0))
+        assertEquals("and", attributeValue(loadedDocument, "isPropertyAvailable", "prepend", 0))
+        assertEquals("(", attributeValue(loadedDocument, "isPropertyAvailable", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "isPropertyAvailable", "close", 0))
         assertEquals("name", attributeValue(loadedDocument, "isPropertyAvailable", "property", 0))
         assertEquals("\n      name = #name#\n      \n    ", textContent(loadedDocument, "isPropertyAvailable", 0))
-        assertFalse(existsAttribute(loadedDocument, "isPropertyAvailable", "prepend", 0))
 
         assertEquals("or", attributeValue(loadedDocument, "isPropertyAvailable", "prepend", 1))
         assertEquals("name2", attributeValue(loadedDocument, "isPropertyAvailable", "property", 1))
@@ -28,7 +28,7 @@ internal class IsPropertyAvailableTagConverterTest {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(2, ifTagsAfterConvert.length)
         assertEquals("_parameter.containsKey('name')", attributeValue(convertedDocument, "if", "test", 0))
-        assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
+        assertEquals("\n        and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 0))
@@ -62,7 +62,7 @@ internal class IsPropertyAvailableTagConverterTest {
                 "      testTable\n" +
                 "    WHERE\n" +
                 "      id = #id#\n" +
-                "    <isPropertyAvailable open=\"and (\" property=\"name\" close=\")\">\n" +
+                "    <isPropertyAvailable prepend=\"and\" open=\"(\" property=\"name\" close=\")\">\n" +
                 "      name = #name#\n" +
                 "      <isPropertyAvailable prepend=\"or\" property=\"name2\">\n" +
                 "        name = #name2#\n" +
