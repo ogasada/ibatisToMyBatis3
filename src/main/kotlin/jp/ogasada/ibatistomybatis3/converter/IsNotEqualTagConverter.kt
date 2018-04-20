@@ -30,8 +30,8 @@ object IsNotEqualTagConverter: ITagConverter {
      * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
-            .prependAttributeValueToTextContent("isNotEqual", "prepend")
             .prependAttributeValueToTextContent("isNotEqual", "open")
+            .prependAttributeValueToTextContent("isNotEqual", "prepend")
             .appendAttributeValueToTextContent("isNotEqual", "close")
             .createNewAttribute("isNotEqual", "test") { node ->
                 val attributeValue = node.getAttribute("property")
