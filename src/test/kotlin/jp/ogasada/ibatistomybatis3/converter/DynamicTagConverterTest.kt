@@ -12,13 +12,16 @@ internal class DynamicTagConverterTest {
         val dynamicTagsBeforeConvert = loadedDocument.getElementsByTagName("dynamic")
         assertEquals(2, dynamicTagsBeforeConvert.length)
         assertEquals("where", attributeValue(loadedDocument, "dynamic", "prepend", 0))
+        assertEquals("(", attributeValue(loadedDocument, "dynamic", "open", 0))
+        assertEquals(")", attributeValue(loadedDocument, "dynamic", "close", 0))
         assertEquals("set", attributeValue(loadedDocument, "dynamic", "prepend", 1))
 
         val convertedDocument = DynamicTagConverter.convert(loadedDocument)
 
         val trimTagsAfterConvert = convertedDocument.getElementsByTagName("trim")
         assertEquals(2, trimTagsAfterConvert.length)
-        assertEquals("where", attributeValue(convertedDocument, "trim", "prefix", 0))
+        assertEquals("where (", attributeValue(convertedDocument, "trim", "prefix", 0))
+        assertEquals(")", attributeValue(convertedDocument, "trim", "suffix", 0))
         assertEquals("AND |OR ", attributeValue(convertedDocument, "trim", "prefixOverrides", 0))
 
         assertEquals("set", attributeValue(convertedDocument, "trim", "prefix", 1))
@@ -51,7 +54,7 @@ internal class DynamicTagConverterTest {
                 "      name\n" +
                 "    FROM\n" +
                 "      testTable\n" +
-                "    <dynamic prepend=\"where\">\n" +
+                "    <dynamic prepend=\"where\" open=\"(\" close=\")\">\n" +
                 "      <isEqual prepend=\"and\" property=\"id\" compareValue=\"1\">\n" +
                 "        id = #id#\n" +
                 "      </isEqual>\n" +
