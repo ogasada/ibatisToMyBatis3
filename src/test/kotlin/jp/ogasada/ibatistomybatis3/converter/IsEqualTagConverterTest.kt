@@ -11,12 +11,12 @@ internal class IsEqualTagConverterTest {
 
         val isEqualTagsBeforeConvert = loadedDocument.getElementsByTagName("isEqual")
         assertEquals(2, isEqualTagsBeforeConvert.length)
-        assertEquals("and (", attributeValue(loadedDocument, "isEqual", "open", 0))
+        assertEquals("and", attributeValue(loadedDocument, "isEqual", "prepend", 0))
+        assertEquals("(", attributeValue(loadedDocument, "isEqual", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "isEqual", "close", 0))
         assertEquals("name", attributeValue(loadedDocument, "isEqual", "property", 0))
         assertEquals("foo", attributeValue(loadedDocument, "isEqual", "compareValue", 0))
         assertEquals("\n      name = #name#\n      \n    ", textContent(loadedDocument, "isEqual", 0))
-        assertFalse(existsAttribute(loadedDocument, "isEqual", "prepend", 0))
         assertFalse(existsAttribute(loadedDocument, "isEqual", "compareProperty", 0))
 
         assertEquals("or", attributeValue(loadedDocument, "isEqual", "prepend", 1))
@@ -32,7 +32,7 @@ internal class IsEqualTagConverterTest {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(2, ifTagsAfterConvert.length)
         assertEquals("name.toString().equals('foo'.toString()))", attributeValue(convertedDocument, "if", "test", 0))
-        assertEquals("\n       and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
+        assertEquals("\n        and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "compareProperty", 0))
@@ -70,7 +70,7 @@ internal class IsEqualTagConverterTest {
                 "      testTable\n" +
                 "    WHERE\n" +
                 "      id = #id#\n" +
-                "    <isEqual open=\"and (\" property=\"name\" compareValue=\"foo\" close=\")\">\n" +
+                "    <isEqual prepend=\"and\" open=\"(\" property=\"name\" compareValue=\"foo\" close=\")\">\n" +
                 "      name = #name#\n" +
                 "      <isEqual prepend=\"or\" property=\"name2\" compareProperty=\"compareName2\">\n" +
                 "        name = #name2#\n" +
