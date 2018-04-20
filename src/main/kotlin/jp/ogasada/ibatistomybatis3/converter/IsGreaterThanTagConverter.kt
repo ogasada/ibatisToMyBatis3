@@ -30,8 +30,8 @@ object IsGreaterThanTagConverter: ITagConverter {
      * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
-            .prependAttributeValueToTextContent("isGreaterThan", "prepend")
             .prependAttributeValueToTextContent("isGreaterThan", "open")
+            .prependAttributeValueToTextContent("isGreaterThan", "prepend")
             .appendAttributeValueToTextContent("isGreaterThan", "close")
             .createNewAttribute("isGreaterThan", "test") { node ->
                 val attributeValue = node.getAttribute("property")
