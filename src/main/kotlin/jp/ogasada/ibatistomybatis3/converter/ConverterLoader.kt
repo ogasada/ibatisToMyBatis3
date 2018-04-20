@@ -4,6 +4,7 @@ object ConverterLoader {
 
     private val converters = listOf(
             DynamicTagConverter,
+            IterateTagConverter,
             SqlMapTagConverter,
             ResultMapTagConverter,
             ResultTagConverter,

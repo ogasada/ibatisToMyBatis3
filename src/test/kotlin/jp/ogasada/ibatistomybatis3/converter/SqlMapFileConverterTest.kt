@@ -31,6 +31,7 @@ internal class SqlMapFileConverterTest {
         isPropertyAvailableTagTestBeforeConvert(loadedDocument)
         isNotPropertyAvailableTagTestBeforeConvert(loadedDocument)
         dynamicTagTestBeforeConvert(loadedDocument)
+        iterateTagTestBeforeConvert(loadedDocument)
 
         val convertedDocument: Document = SqlMapFileConverter.convert(loadedDocument)
 
@@ -54,6 +55,7 @@ internal class SqlMapFileConverterTest {
         isPropertyAvailableTagTestAfterConvert(convertedDocument)
         isNotPropertyAvailableTagTestAfterConvert(convertedDocument)
         dynamicTagTestAfterConvert(convertedDocument)
+        iterateTagTestAfterConvert(convertedDocument)
     }
 
     private fun sqlMapTagTestBeforeConvert(loadedDocument: Document) {
@@ -681,6 +683,67 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "trim", "close", 1))
     }
 
+    private fun iterateTagTestBeforeConvert(loadedDocument: Document) {
+        val iterateTagsBeforeConvert = loadedDocument.getElementsByTagName("iterate")
+        assertEquals(3, iterateTagsBeforeConvert.length)
+        assertEquals("list", attributeValue(loadedDocument, "iterate", "property", 0))
+        assertEquals("(", attributeValue(loadedDocument, "iterate", "open", 0))
+        assertEquals(")", attributeValue(loadedDocument, "iterate", "close", 0))
+        assertEquals(" OR ", attributeValue(loadedDocument, "iterate", "conjunction", 0))
+        assertEquals("\n        (name = #list[].name#\n      \n        )\n    ", textContent(loadedDocument, "iterate", 0))
+
+        assertEquals("list[].subList", attributeValue(loadedDocument, "iterate", "property", 1))
+        assertEquals("id IN", attributeValue(loadedDocument, "iterate", "prepend", 1))
+        assertEquals("(", attributeValue(loadedDocument, "iterate", "open", 1))
+        assertEquals(")", attributeValue(loadedDocument, "iterate", "close", 1))
+        assertEquals(",", attributeValue(loadedDocument, "iterate", "conjunction", 1))
+        assertEquals("\n          #list[].subList[].id#\n      ", textContent(loadedDocument, "iterate", 1))
+
+        assertEquals("AND", attributeValue(loadedDocument, "iterate", "prepend", 2))
+        assertEquals("(", attributeValue(loadedDocument, "iterate", "open", 2))
+        assertEquals(")", attributeValue(loadedDocument, "iterate", "close", 2))
+        assertEquals(" AND ", attributeValue(loadedDocument, "iterate", "conjunction", 2))
+        assertEquals("\n        id = #[]#\n      ", textContent(loadedDocument, "iterate", 2))
+        assertFalse(existsAttribute(loadedDocument, "iterate", "property", 2))
+    }
+
+    private fun iterateTagTestAfterConvert(convertedDocument: Document) {
+        val foreachTagsAfterConvert = convertedDocument.getElementsByTagName("foreach")
+        assertEquals(3, foreachTagsAfterConvert.length)
+        assertEquals("listItem", attributeValue(convertedDocument, "foreach", "item", 0))
+        assertEquals("list", attributeValue(convertedDocument, "foreach", "collection", 0))
+        assertEquals("(", attributeValue(convertedDocument, "foreach", "open", 0))
+        assertEquals(")", attributeValue(convertedDocument, "foreach", "close", 0))
+        assertEquals(" OR ", attributeValue(convertedDocument, "foreach", "separator", 0))
+        assertEquals("\n        (name = #listItem.name#\n      \n        )\n    ", textContent(convertedDocument, "foreach", 0))
+
+        assertEquals("listItem.subListItem", attributeValue(convertedDocument, "foreach", "item", 1))
+        assertEquals("listItem.subList", attributeValue(convertedDocument, "foreach", "collection", 1))
+        assertEquals("id IN (", attributeValue(convertedDocument, "foreach", "open", 1))
+        assertEquals(")", attributeValue(convertedDocument, "foreach", "close", 1))
+        assertEquals(",", attributeValue(convertedDocument, "foreach", "separator", 1))
+        assertEquals("\n          #listItem.subListItem.id#\n      ", textContent(convertedDocument, "foreach", 1))
+
+        assertEquals("item", attributeValue(convertedDocument, "foreach", "item", 2))
+        assertEquals("list", attributeValue(convertedDocument, "foreach", "collection", 2))
+        assertEquals("AND (", attributeValue(convertedDocument, "foreach", "open", 2))
+        assertEquals(")", attributeValue(convertedDocument, "foreach", "close", 2))
+        assertEquals(" AND ", attributeValue(convertedDocument, "foreach", "separator", 2))
+        assertEquals("\n        id = #item#\n      ", textContent(convertedDocument, "foreach", 2))
+
+        assertFalse(existsAttribute(convertedDocument, "foreach", "prepend", 0))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "property", 0))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "conjunction", 0))
+
+        assertFalse(existsAttribute(convertedDocument, "foreach", "prepend", 1))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "property", 1))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "conjunction", 1))
+
+        assertFalse(existsAttribute(convertedDocument, "foreach", "prepend", 2))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "property", 2))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "conjunction", 2))
+    }
+
     private fun loadValidDocument(): Document {
         val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<!DOCTYPE sqlMap\n" +
@@ -780,6 +843,13 @@ internal class SqlMapFileConverterTest {
                 "        name = #name4#\n" +
                 "      </isNotPropertyAvailable>\n" +
                 "    </isNotPropertyAvailable>\n" +
+                "    <iterate property=\"list\" open=\"(\" close=\")\" conjunction=\" OR \" >\n" +
+                "        (name = #list[].name#\n" +
+                "      <iterate property=\"list[].subList\" prepend=\"id IN\" open=\"(\" close=\")\" conjunction=\",\" >\n" +
+                "          #list[].subList[].id#\n" +
+                "      </iterate>\n" +
+                "        )\n" +
+                "    </iterate>\n" +
                 "  </select>\n" +
                 "  <select id=\"find3\" resultMap=\"findResult\" parameterClass=\"long\">\n" +
                 "    SELECT\n" +
@@ -794,6 +864,9 @@ internal class SqlMapFileConverterTest {
                 "      <isEqual prepend=\"and\" property=\"name\" compareValue=\"foo\">\n" +
                 "        name = #name#\n" +
                 "      </isEqual>\n" +
+                "      <iterate prepend=\"AND\" open=\"(\" close=\")\" conjunction=\" AND \" >\n" +
+                "        id = #[]#\n" +
+                "      </iterate>\n" +
                 "    </dynamic>\n" +
                 "  </select>\n" +
                 "  <insert id=\"insert\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
