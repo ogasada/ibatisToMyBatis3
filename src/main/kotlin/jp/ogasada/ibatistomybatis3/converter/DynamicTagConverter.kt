@@ -73,14 +73,19 @@ object DynamicTagConverter: ITagConverter {
      * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
-            .convertAttributeName("dynamic", "prepend", "prefix")
-            .convertAttributeName("dynamic", "open", "prefix")
-            .convertAttributeName("dynamic", "close", "suffix")
+            .createNewAttribute("dynamic", "prefix") { node ->
+                listOf("prepend", "open").mapNotNull {
+                    if (node.hasAttribute(it)) node.getAttribute(it) else null
+                }.joinToString(separator = " ")
+            }
             .createNewAttribute("dynamic", "prefixOverrides") { node ->
                 (listOf("AND ", "OR ") + collectChildPrependValue(node.childNodes))
                         .toSortedSet()
                         .joinToString(separator = "|")
             }
+            .convertAttributeName("dynamic", "close", "suffix")
+            .removeAttribute("dynamic", "prepend")
+            .removeAttribute("dynamic", "open")
             .convertTagName("dynamic", "trim")
 
     private fun collectChildPrependValue(children: NodeList) = (0 until children.length).mapNotNull {
@@ -88,11 +93,7 @@ object DynamicTagConverter: ITagConverter {
         when (child.nodeType) {
             Node.ELEMENT_NODE -> {
                 child as Element
-                if (child.hasAttribute("prepend")) {
-                    "${child.getAttribute("prepend").toUpperCase()} "
-                } else {
-                    null
-                }
+                if (child.hasAttribute("prepend")) "${child.getAttribute("prepend").toUpperCase()} " else null
             }
             else -> null
         }
