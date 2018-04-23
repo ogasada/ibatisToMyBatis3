@@ -15,7 +15,7 @@ internal class ResultTagConverterTest {
         assertEquals("name", attributeValue(loadedDocument, "result", "property", 1))
         assertEquals("detailList", attributeValue(loadedDocument, "result", "property", 2))
         assertEquals("id", attributeValue(loadedDocument, "result", "column", 0))
-        assertEquals("name", attributeValue(loadedDocument, "result", "column", 1))
+        assertFalse(existsAttribute(loadedDocument, "result", "column", 1))
         assertEquals("int", attributeValue(loadedDocument, "result", "javaType", 0))
         assertEquals("String", attributeValue(loadedDocument, "result", "javaType", 1))
         assertEquals("List", attributeValue(loadedDocument, "result", "javaType", 2))
@@ -52,7 +52,7 @@ internal class ResultTagConverterTest {
                 "<sqlMap namespace=\"jp.ogasada.test\">\n" +
                 "  <resultMap id=\"findResult\" class=\"HashMap\" groupBy=\"id\">\n" +
                 "    <result property=\"id\" column=\"id\" javaType=\"int\" />\n" +
-                "    <result property=\"name\" column=\"name\" javaType=\"String\" />\n" +
+                "    <result property=\"name\" javaType=\"String\" />\n" +
                 "    <result property=\"detailList\" javaType=\"List\" resultMap=\"jp.ogasada.ibatistomybatis3.detailResult\" />\n" +
                 "  </resultMap>\n" +
                 "  <select id=\"find\" resultMap=\"findResult\" parameterClass=\"long\">\n" +
