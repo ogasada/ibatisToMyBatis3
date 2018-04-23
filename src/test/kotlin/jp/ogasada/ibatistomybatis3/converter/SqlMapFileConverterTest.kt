@@ -293,7 +293,7 @@ internal class SqlMapFileConverterTest {
     private fun isEqualTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("name.toString().equals('foo'.toString()))", attributeValue(convertedDocument, "if", "test", 4))
+        assertEquals("name.toString().equals('foo'.toString())", attributeValue(convertedDocument, "if", "test", 4))
         assertEquals("\n       and ( name = #{name}\n       ) \n    ", textContent(convertedDocument, "if", 4))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 4))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 4))
@@ -302,7 +302,7 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "open", 4))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 4))
 
-        assertEquals("name2.toString().equals(compareName2.toString()))", attributeValue(convertedDocument, "if", "test", 5))
+        assertEquals("name2.toString().equals(compareName2.toString())", attributeValue(convertedDocument, "if", "test", 5))
         assertEquals("\n         or name = #{name2}\n      ", textContent(convertedDocument, "if", 5))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 5))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 5))
@@ -335,7 +335,7 @@ internal class SqlMapFileConverterTest {
     private fun isNotEqualTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("!name.toString().equals('foo'.toString()))", attributeValue(convertedDocument, "if", "test", 6))
+        assertEquals("!name.toString().equals('foo'.toString())", attributeValue(convertedDocument, "if", "test", 6))
         assertEquals("\n       and ( name = #{name}\n       ) \n    ", textContent(convertedDocument, "if", 6))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 6))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 6))
@@ -344,7 +344,7 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "open", 6))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 6))
 
-        assertEquals("!name2.toString().equals(compareName2.toString()))", attributeValue(convertedDocument, "if", "test", 7))
+        assertEquals("!name2.toString().equals(compareName2.toString())", attributeValue(convertedDocument, "if", "test", 7))
         assertEquals("\n         or name = #{name2}\n      ", textContent(convertedDocument, "if", 7))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 7))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 7))

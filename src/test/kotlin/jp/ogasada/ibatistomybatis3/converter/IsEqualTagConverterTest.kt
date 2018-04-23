@@ -31,7 +31,7 @@ internal class IsEqualTagConverterTest {
 
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(2, ifTagsAfterConvert.length)
-        assertEquals("name.toString().equals('foo'.toString()))", attributeValue(convertedDocument, "if", "test", 0))
+        assertEquals("name.toString().equals('foo'.toString())", attributeValue(convertedDocument, "if", "test", 0))
         assertEquals("\n        and ( name = #name#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
@@ -40,7 +40,7 @@ internal class IsEqualTagConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "open", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 0))
 
-        assertEquals("name2.toString().equals(compareName2.toString()))", attributeValue(convertedDocument, "if", "test", 1))
+        assertEquals("name2.toString().equals(compareName2.toString())", attributeValue(convertedDocument, "if", "test", 1))
         assertEquals("\n         or name = #name2#\n      ", textContent(convertedDocument, "if", 1))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 1))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 1))
