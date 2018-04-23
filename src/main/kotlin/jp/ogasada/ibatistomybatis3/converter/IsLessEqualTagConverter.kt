@@ -21,9 +21,9 @@ object IsLessEqualTagConverter: ITagConverter {
      * ### after
      *
      * ```
-     * <if test="id <![CDATA[<=]]> 1">
+     * <if test="id lte 1">
      *   and ( id = #id#
-     *   <if test="id2 <![CDATA[<=]]> compareId2))">
+     *   <if test="id2 lte compareId2))">
      *     or id = #id2#
      *   </if> )
      * </if>
@@ -36,8 +36,8 @@ object IsLessEqualTagConverter: ITagConverter {
             .createNewAttribute("isLessEqual", "test") { node ->
                 val attributeValue = node.getAttribute("property")
                 when {
-                    node.hasAttribute("compareValue") -> "$attributeValue <![CDATA[<=]]> ${node.getAttribute("compareValue")}"
-                    node.hasAttribute("compareProperty") -> "$attributeValue <![CDATA[<=]]> ${node.getAttribute("compareProperty")}"
+                    node.hasAttribute("compareValue") -> "$attributeValue lte ${node.getAttribute("compareValue")}"
+                    node.hasAttribute("compareProperty") -> "$attributeValue lte ${node.getAttribute("compareProperty")}"
                     else -> ""
                 }
             }

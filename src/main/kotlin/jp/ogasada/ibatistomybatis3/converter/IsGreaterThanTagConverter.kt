@@ -21,9 +21,9 @@ object IsGreaterThanTagConverter: ITagConverter {
      * ### after
      *
      * ```
-     * <if test="id <![CDATA[>]]> 1">
+     * <if test="id gt 1">
      *   and ( id = #id#
-     *   <if test="id2 <![CDATA[>]]> compareId2))">
+     *   <if test="id2 gt compareId2))">
      *     or id = #id2#
      *   </if> )
      * </if>
@@ -36,8 +36,8 @@ object IsGreaterThanTagConverter: ITagConverter {
             .createNewAttribute("isGreaterThan", "test") { node ->
                 val attributeValue = node.getAttribute("property")
                 when {
-                    node.hasAttribute("compareValue") -> "$attributeValue <![CDATA[>]]> ${node.getAttribute("compareValue")}"
-                    node.hasAttribute("compareProperty") -> "$attributeValue <![CDATA[>]]> ${node.getAttribute("compareProperty")}"
+                    node.hasAttribute("compareValue") -> "$attributeValue gt ${node.getAttribute("compareValue")}"
+                    node.hasAttribute("compareProperty") -> "$attributeValue gt ${node.getAttribute("compareProperty")}"
                     else -> ""
                 }
             }

@@ -21,9 +21,9 @@ object IsLessThanTagConverter: ITagConverter {
      * ### after
      *
      * ```
-     * <if test="id <![CDATA[<]]> 1">
+     * <if test="id lt 1">
      *   and ( id = #id#
-     *   <if test="id2 <![CDATA[<]]> compareId2))">
+     *   <if test="id2 lt compareId2))">
      *     or id = #id2#
      *   </if> )
      * </if>
@@ -36,8 +36,8 @@ object IsLessThanTagConverter: ITagConverter {
             .createNewAttribute("isLessThan", "test") { node ->
                 val attributeValue = node.getAttribute("property")
                 when {
-                    node.hasAttribute("compareValue") -> "$attributeValue <![CDATA[<]]> ${node.getAttribute("compareValue")}"
-                    node.hasAttribute("compareProperty") -> "$attributeValue <![CDATA[<]]> ${node.getAttribute("compareProperty")}"
+                    node.hasAttribute("compareValue") -> "$attributeValue lt ${node.getAttribute("compareValue")}"
+                    node.hasAttribute("compareProperty") -> "$attributeValue lt ${node.getAttribute("compareProperty")}"
                     else -> ""
                 }
             }
