@@ -377,7 +377,7 @@ internal class SqlMapFileConverterTest {
     private fun isGreaterEqualTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("id <![CDATA[>=]]> 1", attributeValue(convertedDocument, "if", "test", 8))
+        assertEquals("id gte 1", attributeValue(convertedDocument, "if", "test", 8))
         assertEquals("\n       and ( id = #{id}\n       ) \n    ", textContent(convertedDocument, "if", 8))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 8))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 8))
@@ -386,7 +386,7 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "open", 8))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 8))
 
-        assertEquals("id2 <![CDATA[>=]]> compareId2", attributeValue(convertedDocument, "if", "test", 9))
+        assertEquals("id2 gte compareId2", attributeValue(convertedDocument, "if", "test", 9))
         assertEquals("\n         or id = #{id2}\n      ", textContent(convertedDocument, "if", 9))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 9))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 9))
@@ -419,7 +419,7 @@ internal class SqlMapFileConverterTest {
     private fun isGreaterThanTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("id <![CDATA[>]]> 1", attributeValue(convertedDocument, "if", "test", 10))
+        assertEquals("id gt 1", attributeValue(convertedDocument, "if", "test", 10))
         assertEquals("\n       and ( id = #{id}\n       ) \n    ", textContent(convertedDocument, "if", 10))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 10))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 10))
@@ -428,7 +428,7 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "open", 10))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 10))
 
-        assertEquals("id2 <![CDATA[>]]> compareId2", attributeValue(convertedDocument, "if", "test", 11))
+        assertEquals("id2 gt compareId2", attributeValue(convertedDocument, "if", "test", 11))
         assertEquals("\n         or id = #{id2}\n      ", textContent(convertedDocument, "if", 11))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 11))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 11))
@@ -461,7 +461,7 @@ internal class SqlMapFileConverterTest {
     private fun isLessEqualTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("id <![CDATA[<=]]> 1", attributeValue(convertedDocument, "if", "test", 12))
+        assertEquals("id lte 1", attributeValue(convertedDocument, "if", "test", 12))
         assertEquals("\n       and ( id = #{id}\n       ) \n    ", textContent(convertedDocument, "if", 12))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 12))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 12))
@@ -470,7 +470,7 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "open", 12))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 12))
 
-        assertEquals("id2 <![CDATA[<=]]> compareId2", attributeValue(convertedDocument, "if", "test", 13))
+        assertEquals("id2 lte compareId2", attributeValue(convertedDocument, "if", "test", 13))
         assertEquals("\n         or id = #{id2}\n      ", textContent(convertedDocument, "if", 13))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 13))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 13))
@@ -503,7 +503,7 @@ internal class SqlMapFileConverterTest {
     private fun isLessThanTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("id <![CDATA[<]]> 1", attributeValue(convertedDocument, "if", "test", 14))
+        assertEquals("id lt 1", attributeValue(convertedDocument, "if", "test", 14))
         assertEquals("\n       and ( id = #{id}\n       ) \n    ", textContent(convertedDocument, "if", 14))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 14))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 14))
@@ -512,7 +512,7 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "open", 14))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 14))
 
-        assertEquals("id2 <![CDATA[<]]> compareId2", attributeValue(convertedDocument, "if", "test", 15))
+        assertEquals("id2 lt compareId2", attributeValue(convertedDocument, "if", "test", 15))
         assertEquals("\n         or id = #{id2}\n      ", textContent(convertedDocument, "if", 15))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 15))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 15))

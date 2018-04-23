@@ -31,7 +31,7 @@ internal class IsGreaterThanTagConverterTest {
 
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(2, ifTagsAfterConvert.length)
-        assertEquals("id <![CDATA[>]]> 1", attributeValue(convertedDocument, "if", "test", 0))
+        assertEquals("id gt 1", attributeValue(convertedDocument, "if", "test", 0))
         assertEquals("\n        and ( id = #id#\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
@@ -40,7 +40,7 @@ internal class IsGreaterThanTagConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "open", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 0))
 
-        assertEquals("id2 <![CDATA[>]]> compareId2", attributeValue(convertedDocument, "if", "test", 1))
+        assertEquals("id2 gt compareId2", attributeValue(convertedDocument, "if", "test", 1))
         assertEquals("\n         or id = #id2#\n      ", textContent(convertedDocument, "if", 1))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 1))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 1))
