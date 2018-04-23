@@ -36,8 +36,8 @@ object IsNotEqualTagConverter: ITagConverter {
             .createNewAttribute("isNotEqual", "test") { node ->
                 val attributeValue = node.getAttribute("property")
                 when {
-                    node.hasAttribute("compareValue") -> "!$attributeValue.toString().equals('${node.getAttribute("compareValue")}'.toString()))"
-                    node.hasAttribute("compareProperty") -> "!$attributeValue.toString().equals(${node.getAttribute("compareProperty")}.toString()))"
+                    node.hasAttribute("compareValue") -> "!$attributeValue.toString().equals('${node.getAttribute("compareValue")}'.toString())"
+                    node.hasAttribute("compareProperty") -> "!$attributeValue.toString().equals(${node.getAttribute("compareProperty")}.toString())"
                     else -> ""
                 }
             }
