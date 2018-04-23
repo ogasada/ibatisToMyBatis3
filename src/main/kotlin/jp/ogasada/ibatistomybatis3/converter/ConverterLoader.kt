@@ -23,7 +23,8 @@ object ConverterLoader {
             IsNullTagConverter,
             IsNotNullTagConverter,
             IsPropertyAvailableTagConverter,
-            IsNotPropertyAvailableTagConverter)
+            IsNotPropertyAvailableTagConverter,
+            ParameterConverter)
 
     fun load(): List<ITagConverter> = converters
 }
