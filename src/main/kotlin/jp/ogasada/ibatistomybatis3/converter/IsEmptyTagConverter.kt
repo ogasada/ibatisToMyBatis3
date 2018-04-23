@@ -35,7 +35,7 @@ object IsEmptyTagConverter: ITagConverter {
             .appendAttributeValueToTextContent("isEmpty", "close")
             .createNewAttribute("isEmpty", "test") { node ->
                 val attributeValue = node.getAttribute("property")
-                "$attributeValue == null or $attributeValue == ''"
+                "$attributeValue == null or $attributeValue.isEmpty()"
             }
             .removeAttribute("isEmpty", "prepend")
             .removeAttribute("isEmpty", "open")
