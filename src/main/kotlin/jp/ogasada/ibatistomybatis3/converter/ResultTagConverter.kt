@@ -22,6 +22,15 @@ object ResultTagConverter: ITagConverter {
      * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
+                .createNewAttribute("result", "column") {
+                    if (it.hasAttribute("column")) {
+                        it.getAttribute("column")
+                    } else if (it.hasAttribute("property")) {
+                        it.getAttribute("property")
+                    } else {
+                        ""
+                    }
+                }
                 .convertAttributeValue("result", "resultMap") { it.takeLastWhile { it != '.' } }
                 .convertTagName("result", "collection") { it.hasAttribute("resultMap") }
 }
