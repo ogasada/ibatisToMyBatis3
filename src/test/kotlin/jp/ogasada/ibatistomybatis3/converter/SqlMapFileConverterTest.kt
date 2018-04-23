@@ -221,14 +221,14 @@ internal class SqlMapFileConverterTest {
     private fun isEmptyTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("name == null or name == ''", attributeValue(convertedDocument, "if", "test", 0))
+        assertEquals("name == null or name.isEmpty()", attributeValue(convertedDocument, "if", "test", 0))
         assertEquals("\n       and ( name = #{name}\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 0))
 
-        assertEquals("name2 == null or name2 == ''", attributeValue(convertedDocument, "if", "test", 1))
+        assertEquals("name2 == null or name2.isEmpty()", attributeValue(convertedDocument, "if", "test", 1))
         assertEquals("\n         or name = #{name2}\n      ", textContent(convertedDocument, "if", 1))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 1))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 1))
@@ -255,14 +255,14 @@ internal class SqlMapFileConverterTest {
     private fun isNotEmptyTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("name != null and name != ''", attributeValue(convertedDocument, "if", "test", 2))
+        assertEquals("name != null and !name.isEmpty()", attributeValue(convertedDocument, "if", "test", 2))
         assertEquals("\n       and ( name = #{name}\n       ) \n    ", textContent(convertedDocument, "if", 2))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 2))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 2))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 2))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 2))
 
-        assertEquals("name2 != null and name2 != ''", attributeValue(convertedDocument, "if", "test", 3))
+        assertEquals("name2 != null and !name2.isEmpty()", attributeValue(convertedDocument, "if", "test", 3))
         assertEquals("\n         or name = #{name2}\n      ", textContent(convertedDocument, "if", 3))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 3))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 3))
