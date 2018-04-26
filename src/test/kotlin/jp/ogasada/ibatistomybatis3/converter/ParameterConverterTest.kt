@@ -9,60 +9,61 @@ internal class ParameterConverterTest {
     fun convertForValidDocument() {
         val loadedDocument = loadValidDocument()
 
-        assertEquals("\n        id = #id#\n      ", textContent(loadedDocument, "isEqual", 0))
-        assertEquals("\n        name = \$name\$\n      ", textContent(loadedDocument, "isEqual", 1))
-        assertEquals("\n        id = #id# || #name#\n      ", textContent(loadedDocument, "isNotNull", 0))
-        assertEquals("\n        name = \$id\$ || \$name\$\n      ", textContent(loadedDocument, "isNotNull", 1))
+        assertEquals("\n      id = #id#\n    ", textContent(loadedDocument, "if", 1))
+        assertEquals("\n        name = '\$name\$'\n      ", textContent(loadedDocument, "if", 3))
+        assertEquals("\n        name = '\$name\$ || #id#'\n      ", textContent(loadedDocument, "if", 4))
+        assertEquals("\n      id = #id#\n    ", textContent(loadedDocument, "if", 5))
 
         val convertedDocument = ParameterConverter.convert(loadedDocument)
 
-        assertEquals("\n        id = #{id}\n      ", textContent(convertedDocument, "isEqual", 0))
-        assertEquals("\n        name = \${name}\n      ", textContent(convertedDocument, "isEqual", 1))
-        assertEquals("\n        id = #{id} || #{name}\n      ", textContent(convertedDocument, "isNotNull", 0))
-        assertEquals("\n        name = \${id} || \${name}\n      ", textContent(convertedDocument, "isNotNull", 1))
+        assertEquals("\n      id = #{_parameter}\n    ", textContent(convertedDocument, "if", 1))
+        assertEquals("\n        name = '\${name}'\n      ", textContent(convertedDocument, "if", 3))
+        assertEquals("\n        name = '\${name} || #{id}'\n      ", textContent(convertedDocument, "if", 4))
+        assertEquals("\n      id = #{id}\n    ", textContent(convertedDocument, "if", 5))
     }
 
     private fun loadValidDocument(): Document {
-        val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<!DOCTYPE sqlMap\n" +
-                "  PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\"\n" +
-                "  \"http://ibatis.apache.org/dtd/sql-map-2.dtd\">\n" +
-                "\n" +
-                "<mapper namespace=\"jp.ogasada.test\">\n" +
-                "  <resultMap id=\"findResult\" class=\"HashMap\" groupBy=\"id\">\n" +
-                "    <result property=\"id\" column=\"id\" javaType=\"int\" />\n" +
-                "    <result property=\"name\" column=\"name\" javaType=\"String\" />\n" +
-                "    <result property=\"detailList\" javaType=\"List\" resultMap=\"jp.ogasada.ibatistomybatis3.detailResult\" />\n" +
-                "  </resultMap>\n" +
-                "  <select id=\"find\" resultMap=\"findResult\" parameterClass=\"long\">\n" +
-                "    SELECT\n" +
-                "      id,\n" +
-                "      name\n" +
-                "    FROM\n" +
-                "      testTable\n" +
-                "    <dynamic prepend=\"where\" open=\"(\" close=\")\">\n" +
-                "      <isEqual prepend=\"and\" property=\"id\" compareValue=\"1\">\n" +
-                "        id = #id#\n" +
-                "      </isEqual>\n" +
-                "      <isEqual prepend=\"and\" property=\"name\" compareValue=\"foo\">\n" +
-                "        name = \$name\$\n" +
-                "      </isEqual>\n" +
-                "    </dynamic>\n" +
-                "  </select>\n" +
-                "  <update id=\"update\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
-                "    UPDATE testTable\n" +
-                "    <dynamic prepend=\"set\">\n" +
-                "      <isNotNull prepend=\",\" property=\"id\">\n" +
-                "        id = #id# || #name#\n" +
-                "      </isNotNull>\n" +
-                "      <isNotNull prepend=\",\" property=\"name\">\n" +
-                "        name = \$id\$ || \$name\$\n" +
-                "      </isNotNull>\n" +
-                "    </dynamic>\n" +
-                "    WHERE\n" +
-                "      key = #key#\n" +
-                "  </update>\n" +
-                "</mapper>\n"
+        val xml =
+                """
+                <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+                <mapper namespace="jp.ogasada.test">
+                  <resultMap id="findResult" type="HashMap">
+                    <result property="id" column="id" javaType="int" />
+                    <result property="name" column="name" javaType="String" />
+                  </resultMap>
+                  <select id="find" resultMap="findResult" parameterType="long">
+                    SELECT
+                      id,
+                      name
+                    FROM
+                      testTable
+                    WHERE
+                    <if test="_parameter == ''">
+                      id = 0
+                    </if>
+                    <if test="_parameter != ''">
+                      id = #id#
+                    </if>
+                  </select>
+                  <update id="update" parameterType="jp.ogasada.ibatistomybatis3.TestTableEntity" >
+                    UPDATE testTable
+                    SET
+                    <if test="id == 0">
+                      <if test=" name == ''">
+                        name = '${"$"}name$'
+                      </if>
+                      <if test=" name != ''">
+                        name = '${"$"}name$ || #id#'
+                      </if>
+                    </if>
+                    <if test="id gt 0">
+                      id = #id#
+                    </if>
+                    WHERE
+                    key = #key#
+                  </update>
+                </mapper>
+                """.trimIndent()
 
         return loadXML(xml)
     }
