@@ -7,6 +7,8 @@ object IsEqualTagConverter: ITagConverter {
     /**
      * convert `isEqual` tag as follows
      *
+     * ## case 1
+     *
      * ### before
      *
      * ```
@@ -21,11 +23,29 @@ object IsEqualTagConverter: ITagConverter {
      * ### after
      *
      * ```
-     * <if test="name.toString().equals('foo'.toString()))">
+     * <if test="((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('$attributeValue'))) and name.toString().equals('foo'.toString())">
      *   and ( name = #name#
-     *   <if test="name2.toString().equals(compareName2.toString()))">
+     *   <if test="((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('$attributeValue'))) and name2.toString().equals(compareName2.toString())">
      *     or name = #name2#
      *   </if> )
+     * </if>
+     * ```
+     *
+     * ## case 2
+     *
+     * ### before
+     *
+     * ```
+     * <isEqual open="and (" compareValue="foo" close=")">
+     *   name = #name#
+     * </isEqual>
+     * ```
+     *
+     * ### after
+     *
+     * ```
+     * <if test="((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('_parameter'))) and _parameter.toString().equals('foo'.toString())">
+     *   and ( name = #name# )
      * </if>
      * ```
      */
@@ -33,11 +53,15 @@ object IsEqualTagConverter: ITagConverter {
             .prependAttributeValueToTextContent("isEqual", "open")
             .prependAttributeValueToTextContent("isEqual", "prepend")
             .appendAttributeValueToTextContent("isEqual", "close")
-                val attributeValue = node.getAttribute("property")
             .createNewAttribute("isEqual", "test") { _, node ->
+                val attributeValue = if (node.hasAttribute("property")) node.getAttribute("property") else "_parameter"
                 when {
-                    node.hasAttribute("compareValue") -> "$attributeValue.toString().equals('${node.getAttribute("compareValue")}'.toString())"
-                    node.hasAttribute("compareProperty") -> "$attributeValue.toString().equals(${node.getAttribute("compareProperty")}.toString())"
+                    node.hasAttribute("compareValue") ->
+                        "((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('$attributeValue'))) and " +
+                                "$attributeValue.toString().equals('${node.getAttribute("compareValue")}'.toString())"
+                    node.hasAttribute("compareProperty") ->
+                        "((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('$attributeValue'))) and " +
+                                "$attributeValue.toString().equals(${node.getAttribute("compareProperty")}.toString())"
                     else -> ""
                 }
             }
