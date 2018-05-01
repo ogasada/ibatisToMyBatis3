@@ -84,7 +84,7 @@ object ParameterConverter: ITagConverter {
             val node = tags.item(it) as Element
             val parameterType = node.getAttribute("parameterType").toUpperCase()
             when (parameterType) {
-                "STRING", "INT", "INTEGER", "LONG", "DOUBLE", "FLOAT", "BOOLEAN", "CHAR", "CHARACTER", "SHORT", "BYTE" -> convertParameter(node) { it.replace("#\\{[^}]*}".toRegex(), "#{_parameter}").replace("\\$\\{[^}]*}".toRegex(), "\\\${_parameter}") }
+                "STRING", "INT", "INTEGER", "LONG", "DOUBLE", "FLOAT", "BOOLEAN", "CHAR", "CHARACTER", "SHORT", "BYTE" -> convertParameter(node) { it.replace("\\$\\{[^}]*}".toRegex(), "\\\${value}") }
             }
         }
         return this
