@@ -7,6 +7,8 @@ object IsNotEqualTagConverter: ITagConverter {
     /**
      * convert `isNotEqual` tag as follows
      *
+     * ## case 1
+     *
      * ### before
      *
      * ```
@@ -21,11 +23,29 @@ object IsNotEqualTagConverter: ITagConverter {
      * ### after
      *
      * ```
-     * <if test="!name.toString().equals('foo'.toString()))">
+     * <if test="(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name')) or !name.toString().equals('foo'.toString())">
      *   and ( name = #name#
-     *   <if test="!name2.toString().equals(compareName2.toString()))">
+     *   <if test="(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name2')) or !name2.toString().equals(compareName2.toString())">
      *     or name = #name2#
      *   </if> )
+     * </if>
+     * ```
+     *
+     * ## case 2
+     *
+     * ### before
+     *
+     * ```
+     * <isNotEqual open="and (" compareValue="foo" close=")">
+     *   name = #name#
+     * </isNotEqual>
+     * ```
+     *
+     * ### after
+     *
+     * ```
+     * <if test="(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('_parameter')) or !_parameter.toString().equals('foo'.toString())">
+     *   and ( name = #name# )
      * </if>
      * ```
      */
@@ -33,9 +53,15 @@ object IsNotEqualTagConverter: ITagConverter {
             .prependAttributeValueToTextContent("isNotEqual", "open")
             .prependAttributeValueToTextContent("isNotEqual", "prepend")
             .appendAttributeValueToTextContent("isNotEqual", "close")
-                val attributeValue = node.getAttribute("property")
             .createNewAttribute("isNotEqual", "test") { _, node ->
+                val attributeValue = if (node.hasAttribute("property")) node.getAttribute("property") else "_parameter"
                 when {
+                    node.hasAttribute("compareValue") ->
+                        "(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('$attributeValue')) or " +
+                                "!$attributeValue.toString().equals('${node.getAttribute("compareValue")}'.toString())"
+                    node.hasAttribute("compareProperty") ->
+                        "(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('$attributeValue')) or " +
+                                "!$attributeValue.toString().equals(${node.getAttribute("compareProperty")}.toString())"
                     else -> ""
                 }
             }
