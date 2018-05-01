@@ -7,6 +7,8 @@ object IsLessThanTagConverter: ITagConverter {
     /**
      * convert `isLessThan` tag as follows
      *
+     * ## case 1
+     *
      * ### before
      *
      * ```
@@ -28,13 +30,31 @@ object IsLessThanTagConverter: ITagConverter {
      *   </if> )
      * </if>
      * ```
+     *
+     * ## case 2
+     *
+     * ### before
+     *
+     * ```
+     * <isLessThan open="and (" compareValue="1" close=")">
+     *   id = #id#
+     * </isLessThan>
+     * ```
+     *
+     * ### after
+     *
+     * ```
+     * <if test="_parameter lt 1">
+     *   and ( id = #id# )
+     * </if>
+     * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
             .prependAttributeValueToTextContent("isLessThan", "open")
             .prependAttributeValueToTextContent("isLessThan", "prepend")
             .appendAttributeValueToTextContent("isLessThan", "close")
-                val attributeValue = node.getAttribute("property")
             .createNewAttribute("isLessThan", "test") { _, node ->
+                val attributeValue = if (node.hasAttribute("property")) node.getAttribute("property") else "_parameter"
                 when {
                     node.hasAttribute("compareValue") -> "$attributeValue lt ${node.getAttribute("compareValue")}"
                     node.hasAttribute("compareProperty") -> "$attributeValue lt ${node.getAttribute("compareProperty")}"
