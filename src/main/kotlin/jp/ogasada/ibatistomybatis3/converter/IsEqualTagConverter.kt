@@ -23,9 +23,9 @@ object IsEqualTagConverter: ITagConverter {
      * ### after
      *
      * ```
-     * <if test="((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('$attributeValue'))) and name.toString().equals('foo'.toString())">
+     * <if test="((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('name'))) and name.toString().equals('foo'.toString())">
      *   and ( name = #name#
-     *   <if test="((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('$attributeValue'))) and name2.toString().equals(compareName2.toString())">
+     *   <if test="((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('name2'))) and name2.toString().equals(compareName2.toString())">
      *     or name = #name2#
      *   </if> )
      * </if>
