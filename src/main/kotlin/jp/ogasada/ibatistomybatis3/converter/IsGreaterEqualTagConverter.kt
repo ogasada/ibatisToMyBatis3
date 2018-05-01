@@ -7,6 +7,8 @@ object IsGreaterEqualTagConverter: ITagConverter {
     /**
      * convert `isGreaterEqual` tag as follows
      *
+     * ## case 1
+     *
      * ### before
      *
      * ```
@@ -28,13 +30,31 @@ object IsGreaterEqualTagConverter: ITagConverter {
      *   </if> )
      * </if>
      * ```
+     *
+     * ## case 2
+     *
+     * ### before
+     *
+     * ```
+     * <isGreaterEqual open="and (" compareValue="1" close=")">
+     *   id = #id#
+     * </isGreaterEqual>
+     * ```
+     *
+     * ### after
+     *
+     * ```
+     * <if test="_parameter gte 1">
+     *   and ( id = #id# )
+     * </if>
+     * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
             .prependAttributeValueToTextContent("isGreaterEqual", "open")
             .prependAttributeValueToTextContent("isGreaterEqual", "prepend")
             .appendAttributeValueToTextContent("isGreaterEqual", "close")
-                val attributeValue = node.getAttribute("property")
             .createNewAttribute("isGreaterEqual", "test") { _, node ->
+                val attributeValue = if (node.hasAttribute("property")) node.getAttribute("property") else "_parameter"
                 when {
                     node.hasAttribute("compareValue") -> "$attributeValue gte ${node.getAttribute("compareValue")}"
                     node.hasAttribute("compareProperty") -> "$attributeValue gte ${node.getAttribute("compareProperty")}"
