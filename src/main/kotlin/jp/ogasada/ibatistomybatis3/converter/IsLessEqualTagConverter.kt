@@ -33,8 +33,8 @@ object IsLessEqualTagConverter: ITagConverter {
             .prependAttributeValueToTextContent("isLessEqual", "open")
             .prependAttributeValueToTextContent("isLessEqual", "prepend")
             .appendAttributeValueToTextContent("isLessEqual", "close")
-            .createNewAttribute("isLessEqual", "test") { node ->
                 val attributeValue = node.getAttribute("property")
+            .createNewAttribute("isLessEqual", "test") { _, node ->
                 when {
                     node.hasAttribute("compareValue") -> "$attributeValue lte ${node.getAttribute("compareValue")}"
                     node.hasAttribute("compareProperty") -> "$attributeValue lte ${node.getAttribute("compareProperty")}"

@@ -33,9 +33,8 @@ object IsNotPropertyAvailableTagConverter: ITagConverter {
             .prependAttributeValueToTextContent("isNotPropertyAvailable", "open")
             .prependAttributeValueToTextContent("isNotPropertyAvailable", "prepend")
             .appendAttributeValueToTextContent("isNotPropertyAvailable", "close")
-            .createNewAttribute("isNotPropertyAvailable", "test") { node ->
-                val attributeValue = node.getAttribute("property")
                 "!_parameter.containsKey('$attributeValue')"
+            .createNewAttribute("isNotPropertyAvailable", "test") { _, node ->
             }
             .removeAttribute("isNotPropertyAvailable", "prepend")
             .removeAttribute("isNotPropertyAvailable", "open")

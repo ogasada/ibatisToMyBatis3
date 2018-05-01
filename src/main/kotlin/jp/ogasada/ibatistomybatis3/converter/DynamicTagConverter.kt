@@ -73,12 +73,12 @@ object DynamicTagConverter: ITagConverter {
      * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
-            .createNewAttribute("dynamic", "prefix") { node ->
+            .createNewAttribute("dynamic", "prefix") { _, node ->
                 listOf("prepend", "open").mapNotNull {
                     if (node.hasAttribute(it)) node.getAttribute(it) else null
                 }.joinToString(separator = " ")
             }
-            .createNewAttribute("dynamic", "prefixOverrides") { node ->
+            .createNewAttribute("dynamic", "prefixOverrides") { _, node ->
                 (listOf("AND ", "OR ") + collectChildPrependValue(node.childNodes))
                         .toSortedSet()
                         .joinToString(separator = "|")

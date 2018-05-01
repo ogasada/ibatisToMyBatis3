@@ -33,8 +33,8 @@ object IsNotNullTagConverter: ITagConverter {
             .prependAttributeValueToTextContent("isNotNull", "open")
             .prependAttributeValueToTextContent("isNotNull", "prepend")
             .appendAttributeValueToTextContent("isNotNull", "close")
-            .createNewAttribute("isNotNull", "test") { node ->
                 val attributeValue = node.getAttribute("property")
+            .createNewAttribute("isNotNull", "test") { _, node ->
                 "$attributeValue != null"
             }
             .removeAttribute("isNotNull", "prepend")

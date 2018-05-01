@@ -73,11 +73,11 @@ interface ITagConverter {
     /**
      * create new [attribute] using [valueConverter] in [tag] of [this] document
      */
-    fun Document.createNewAttribute(tag: String, attribute: String, valueConverter: (Element) -> String): Document {
+    fun Document.createNewAttribute(tag: String, attribute: String, valueConverter: (Document, Element) -> String): Document {
         val tags = this.getElementsByTagName(tag)
         (0 until tags.length).forEach {
             val node = tags.item(it) as Element
-            node.setAttribute(attribute, valueConverter(node))
+            node.setAttribute(attribute, valueConverter(this, node))
         }
         return this
     }

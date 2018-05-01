@@ -22,7 +22,6 @@ object ResultTagConverter: ITagConverter {
      * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
-                .createNewAttribute("result", "column") {
                     if (it.hasAttribute("column")) {
                         it.getAttribute("column")
                     } else if (it.hasAttribute("property")) {
@@ -30,6 +29,7 @@ object ResultTagConverter: ITagConverter {
                     } else {
                         ""
                     }
+            .createNewAttribute("result", "column") { _, node ->
                 }
                 .convertAttributeValue("result", "resultMap") { it.takeLastWhile { it != '.' } }
                 .convertTagName("result", "collection") { it.hasAttribute("resultMap") }

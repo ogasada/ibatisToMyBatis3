@@ -33,8 +33,8 @@ object IsGreaterEqualTagConverter: ITagConverter {
             .prependAttributeValueToTextContent("isGreaterEqual", "open")
             .prependAttributeValueToTextContent("isGreaterEqual", "prepend")
             .appendAttributeValueToTextContent("isGreaterEqual", "close")
-            .createNewAttribute("isGreaterEqual", "test") { node ->
                 val attributeValue = node.getAttribute("property")
+            .createNewAttribute("isGreaterEqual", "test") { _, node ->
                 when {
                     node.hasAttribute("compareValue") -> "$attributeValue gte ${node.getAttribute("compareValue")}"
                     node.hasAttribute("compareProperty") -> "$attributeValue gte ${node.getAttribute("compareProperty")}"

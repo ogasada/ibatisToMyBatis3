@@ -33,9 +33,9 @@ object IsPropertyAvailableTagConverter: ITagConverter {
             .prependAttributeValueToTextContent("isPropertyAvailable", "open")
             .prependAttributeValueToTextContent("isPropertyAvailable", "prepend")
             .appendAttributeValueToTextContent("isPropertyAvailable", "close")
-            .createNewAttribute("isPropertyAvailable", "test") { node ->
                 val attributeValue = node.getAttribute("property")
                 "_parameter.containsKey('$attributeValue')"
+            .createNewAttribute("isPropertyAvailable", "test") { _, node ->
             }
             .removeAttribute("isPropertyAvailable", "prepend")
             .removeAttribute("isPropertyAvailable", "open")
