@@ -55,16 +55,16 @@ object IterateTagConverter: ITagConverter {
      *
      */
     override fun convert(xmlDocument: Document): Document = convertAccessorValue(xmlDocument)
-                if (it.hasAttribute("property")) "${it.getAttribute("property")}Item" else "item"
             .createNewAttribute("iterate", "item") { _, node ->
+                if (node.hasAttribute("property")) "${node.getAttribute("property")}Item" else "item"
             }
             .createNewAttribute("iterate", "open") { _, node ->
                 listOf("prepend", "open").mapNotNull {
                     if (node.hasAttribute(it)) node.getAttribute(it) else null
                 }.joinToString(separator = " ")
             }
-                if (it.hasAttribute("property")) it.getAttribute("property") else "list"
             .createNewAttribute("iterate", "collection") { _, node ->
+                if (node.hasAttribute("property")) node.getAttribute("property") else "list"
             }
             .convertAttributeName("iterate", "conjunction", "separator")
             .removeAttribute("iterate", "prepend")
