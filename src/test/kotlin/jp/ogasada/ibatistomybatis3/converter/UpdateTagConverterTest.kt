@@ -25,19 +25,20 @@ internal class UpdateTagConverterTest {
     }
 
     private fun loadValidDocument(): Document {
-        val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<!DOCTYPE sqlMap\n" +
-                "  PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\"\n" +
-                "  \"http://ibatis.apache.org/dtd/sql-map-2.dtd\">\n" +
-                "\n" +
-                "<sqlMap namespace=\"jp.ogasada.test\">\n" +
-                "  <update id=\"update\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
-                "    UPDATE testTable SET\n" +
-                "      name = #name# \n" +
-                "    WHERE \n" +
-                "      id = #id#\n" +
-                "  </update>" +
-                "</sqlMap>\n"
+        val xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE sqlMap
+              PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+              "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+            <sqlMap namespace="jp.ogasada.test">
+              <update id="update" parameterClass="jp.ogasada.ibatistomybatis3.TestTableEntity" >
+                UPDATE testTable SET
+                  name = #name#
+                WHERE
+                  id = #id#
+              </update></sqlMap>
+            """.trimIndent()
 
         return loadXML(xml)
     }

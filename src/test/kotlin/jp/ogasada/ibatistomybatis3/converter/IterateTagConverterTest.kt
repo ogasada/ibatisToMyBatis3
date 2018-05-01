@@ -71,35 +71,36 @@ internal class IterateTagConverterTest {
     }
 
     private fun loadValidDocument(): Document {
-        val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<!DOCTYPE sqlMap\n" +
-                "  PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\"\n" +
-                "  \"http://ibatis.apache.org/dtd/sql-map-2.dtd\">\n" +
-                "\n" +
-                "<sqlMap namespace=\"jp.ogasada.test\">\n" +
-                "  <resultMap id=\"findResult\" class=\"HashMap\" groupBy=\"id\">\n" +
-                "    <result property=\"id\" column=\"id\" javaType=\"int\" />\n" +
-                "    <result property=\"name\" column=\"name\" javaType=\"String\" />\n" +
-                "    <result property=\"detailList\" javaType=\"List\" resultMap=\"jp.ogasada.ibatistomybatis3.detailResult\" />\n" +
-                "  </resultMap>\n" +
-                "  <select id=\"find\" resultMap=\"findResult\" parameterClass=\"long\">\n" +
-                "    SELECT\n" +
-                "      id,\n" +
-                "      name\n" +
-                "    FROM\n" +
-                "      testTable\n" +
-                "      <iterate property=\"list\" open=\"(\" close=\")\" conjunction=\" OR \" >\n" +
-                "        (name = #list[].name#\n" +
-                "        <iterate property=\"list[].subList\" prepend=\"id IN\" open=\"(\" close=\")\" conjunction=\",\" >\n" +
-                "          #list[].subList[].id#\n" +
-                "        </iterate>\n" +
-                "        )\n" +
-                "      </iterate>\n" +
-                "      <iterate prepend=\"AND\" open=\"(\" close=\")\" conjunction=\" AND \" >\n" +
-                "        id = #[]#\n" +
-                "      </iterate>\n" +
-                "  </select>" +
-                "</sqlMap>\n"
+        val xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE sqlMap
+              PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+              "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+            <sqlMap namespace="jp.ogasada.test">
+              <resultMap id="findResult" class="HashMap" groupBy="id">
+                <result property="id" column="id" javaType="int" />
+                <result property="name" column="name" javaType="String" />
+                <result property="detailList" javaType="List" resultMap="jp.ogasada.ibatistomybatis3.detailResult" />
+              </resultMap>
+              <select id="find" resultMap="findResult" parameterClass="long">
+                SELECT
+                  id,
+                  name
+                FROM
+                  testTable
+                  <iterate property="list" open="(" close=")" conjunction=" OR " >
+                    (name = #list[].name#
+                    <iterate property="list[].subList" prepend="id IN" open="(" close=")" conjunction="," >
+                      #list[].subList[].id#
+                    </iterate>
+                    )
+                  </iterate>
+                  <iterate prepend="AND" open="(" close=")" conjunction=" AND " >
+                    id = #[]#
+                  </iterate>
+              </select></sqlMap>
+            """.trimIndent()
 
         return loadXML(xml)
     }

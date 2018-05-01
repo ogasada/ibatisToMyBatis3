@@ -9,17 +9,13 @@ internal class ParameterConverterTest {
     fun convertForValidDocument() {
         val loadedDocument = loadValidDocument()
 
-        assertEquals("\n      id = #id#\n    ", textContent(loadedDocument, "if", 1))
-        assertEquals("\n        name = '\$name\$'\n      ", textContent(loadedDocument, "if", 3))
-        assertEquals("\n        name = '\$name\$ || #id#'\n      ", textContent(loadedDocument, "if", 4))
-        assertEquals("\n      id = #id#\n    ", textContent(loadedDocument, "if", 5))
+        assertEquals("\n    SELECT\n      id,\n      name\n    FROM\n      testTable\n    WHERE\n      id = #id# or\n      id = \$id$\n  ", textContent(loadedDocument, "select", 0))
+        assertEquals("\n    UPDATE testTable\n    SET\n      name = '\$name$ || #id#'\n      , id = #id#\n    WHERE\n      key = #key#\n  ", textContent(loadedDocument, "update", 0))
 
         val convertedDocument = ParameterConverter.convert(loadedDocument)
 
-        assertEquals("\n      id = #{_parameter}\n    ", textContent(convertedDocument, "if", 1))
-        assertEquals("\n        name = '\${name}'\n      ", textContent(convertedDocument, "if", 3))
-        assertEquals("\n        name = '\${name} || #{id}'\n      ", textContent(convertedDocument, "if", 4))
-        assertEquals("\n      id = #{id}\n    ", textContent(convertedDocument, "if", 5))
+        assertEquals("\n    SELECT\n      id,\n      name\n    FROM\n      testTable\n    WHERE\n      id = #{id} or\n      id = \${value}\n  ", textContent(convertedDocument, "select", 0))
+        assertEquals("\n    UPDATE testTable\n    SET\n      name = '\${name} || #{id}'\n      , id = #{id}\n    WHERE\n      key = #{key}\n  ", textContent(convertedDocument, "update", 0))
     }
 
     private fun loadValidDocument(): Document {
@@ -38,29 +34,16 @@ internal class ParameterConverterTest {
                     FROM
                       testTable
                     WHERE
-                    <if test="_parameter == ''">
-                      id = 0
-                    </if>
-                    <if test="_parameter != ''">
-                      id = #id#
-                    </if>
+                      id = #id# or
+                      id = ${"$"}id$
                   </select>
                   <update id="update" parameterType="jp.ogasada.ibatistomybatis3.TestTableEntity" >
                     UPDATE testTable
                     SET
-                    <if test="id == 0">
-                      <if test=" name == ''">
-                        name = '${"$"}name$'
-                      </if>
-                      <if test=" name != ''">
-                        name = '${"$"}name$ || #id#'
-                      </if>
-                    </if>
-                    <if test="id gt 0">
-                      id = #id#
-                    </if>
+                      name = '${"$"}name$ || #id#'
+                      , id = #id#
                     WHERE
-                    key = #key#
+                      key = #key#
                   </update>
                 </mapper>
                 """.trimIndent()

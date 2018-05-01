@@ -25,18 +25,19 @@ internal class DeleteTagConverterTest {
     }
 
     private fun loadValidDocument(): Document {
-        val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<!DOCTYPE sqlMap\n" +
-                "  PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\"\n" +
-                "  \"http://ibatis.apache.org/dtd/sql-map-2.dtd\">\n" +
-                "\n" +
-                "<sqlMap namespace=\"jp.ogasada.test\">\n" +
-                "  <delete id=\"delete\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
-                "    DELETE FROM testTable \n" +
-                "    WHERE \n" +
-                "      id = #id#\n" +
-                "  </delete>" +
-                "</sqlMap>\n"
+        val xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE sqlMap
+              PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+              "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+            <sqlMap namespace="jp.ogasada.test">
+              <delete id="delete" parameterClass="jp.ogasada.ibatistomybatis3.TestTableEntity" >
+                DELETE FROM testTable
+                WHERE
+                  id = #id#
+              </delete></sqlMap>
+            """.trimIndent()
 
         return loadXML(xml)
     }

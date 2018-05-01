@@ -25,23 +25,24 @@ internal class InsertTagConverterTest {
     }
 
     private fun loadValidDocument(): Document {
-        val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<!DOCTYPE sqlMap\n" +
-                "  PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\"\n" +
-                "  \"http://ibatis.apache.org/dtd/sql-map-2.dtd\">\n" +
-                "\n" +
-                "<sqlMap namespace=\"jp.ogasada.test\">\n" +
-                "  <insert id=\"insert\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
-                "    INSERT INTO testTable (\n" +
-                "      id,\n" +
-                "      name\n" +
-                "    )\n" +
-                "    VALUES (\n" +
-                "      #id#,\n" +
-                "      #name#\n" +
-                "    )\n" +
-                "  </insert>" +
-                "</sqlMap>\n"
+        val xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE sqlMap
+              PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+              "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+            <sqlMap namespace="jp.ogasada.test">
+              <insert id="insert" parameterClass="jp.ogasada.ibatistomybatis3.TestTableEntity" >
+                INSERT INTO testTable (
+                  id,
+                  name
+                )
+                VALUES (
+                  #id#,
+                  #name#
+                )
+              </insert></sqlMap>
+            """.trimIndent()
 
         return loadXML(xml)
     }

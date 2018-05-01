@@ -33,26 +33,28 @@ internal class ResultMapTagConverterTest {
     }
 
     private fun loadValidDocument(): Document {
-        val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<!DOCTYPE sqlMap\n" +
-                "  PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\"\n" +
-                "  \"http://ibatis.apache.org/dtd/sql-map-2.dtd\">\n" +
-                "\n" +
-                "<sqlMap namespace=\"jp.ogasada.test\">\n" +
-                "  <resultMap id=\"findResult\" class=\"HashMap\" groupBy=\"id\">\n" +
-                "    <result property=\"id\" column=\"id\" javaType=\"int\" />\n" +
-                "    <result property=\"name\" column=\"name\" javaType=\"String\" />\n" +
-                "  </resultMap>\n" +
-                "  <select id=\"find\" resultMap=\"findResult\" parameterClass=\"long\">\n" +
-                "    SELECT\n" +
-                "      id,\n" +
-                "      name\n" +
-                "    FROM\n" +
-                "      testTable\n" +
-                "    WHERE\n" +
-                "      id = #id#\n" +
-                "  </select>\n" +
-                "</sqlMap>\n"
+        val xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE sqlMap
+              PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+              "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+            <sqlMap namespace="jp.ogasada.test">
+              <resultMap id="findResult" class="HashMap" groupBy="id">
+                <result property="id" column="id" javaType="int" />
+                <result property="name" column="name" javaType="String" />
+              </resultMap>
+              <select id="find" resultMap="findResult" parameterClass="long">
+                SELECT
+                  id,
+                  name
+                FROM
+                  testTable
+                WHERE
+                  id = #id#
+              </select>
+            </sqlMap>
+            """.trimIndent()
 
         return loadXML(xml)
     }

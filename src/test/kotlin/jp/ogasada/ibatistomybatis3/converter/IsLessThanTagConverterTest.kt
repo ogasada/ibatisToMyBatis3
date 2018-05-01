@@ -51,41 +51,43 @@ internal class IsLessThanTagConverterTest {
     }
 
     private fun loadValidDocument(): Document {
-        val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<!DOCTYPE sqlMap\n" +
-                "  PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\"\n" +
-                "  \"http://ibatis.apache.org/dtd/sql-map-2.dtd\">\n" +
-                "\n" +
-                "<sqlMap namespace=\"jp.ogasada.test\">\n" +
-                "  <resultMap id=\"findResult\" class=\"HashMap\" groupBy=\"id\">\n" +
-                "    <result property=\"id\" column=\"id\" javaType=\"int\" />\n" +
-                "    <result property=\"name\" column=\"name\" javaType=\"String\" />\n" +
-                "    <result property=\"detailList\" javaType=\"List\" resultMap=\"jp.ogasada.ibatistomybatis3.detailResult\" />\n" +
-                "  </resultMap>\n" +
-                "  <select id=\"find\" resultMap=\"findResult\" parameterClass=\"long\">\n" +
-                "    SELECT\n" +
-                "      id,\n" +
-                "      name\n" +
-                "    FROM\n" +
-                "      testTable\n" +
-                "    WHERE\n" +
-                "      name = #name#\n" +
-                "    <isLessThan prepend=\"and\" open=\"(\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
-                "      id = #id#\n" +
-                "      <isLessThan prepend=\"or\" property=\"id2\" compareProperty=\"compareId2\">\n" +
-                "        id = #id2#\n" +
-                "      </isLessThan>\n" +
-                "    </isLessThan>\n" +
-                "  </select>\n" +
-                "  <select id=\"find2\" resultClass=\"String\" parameterClass=\"long\">\n" +
-                "    SELECT\n" +
-                "      name\n" +
-                "    FROM\n" +
-                "      testTable\n" +
-                "    WHERE\n" +
-                "      id = #id#\n" +
-                "  </select>\n" +
-                "</sqlMap>\n"
+        val xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE sqlMap
+              PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+              "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+            <sqlMap namespace="jp.ogasada.test">
+              <resultMap id="findResult" class="HashMap" groupBy="id">
+                <result property="id" column="id" javaType="int" />
+                <result property="name" column="name" javaType="String" />
+                <result property="detailList" javaType="List" resultMap="jp.ogasada.ibatistomybatis3.detailResult" />
+              </resultMap>
+              <select id="find" resultMap="findResult" parameterClass="long">
+                SELECT
+                  id,
+                  name
+                FROM
+                  testTable
+                WHERE
+                  name = #name#
+                <isLessThan prepend="and" open="(" property="id" compareValue="1" close=")">
+                  id = #id#
+                  <isLessThan prepend="or" property="id2" compareProperty="compareId2">
+                    id = #id2#
+                  </isLessThan>
+                </isLessThan>
+              </select>
+              <select id="find2" resultClass="String" parameterClass="long">
+                SELECT
+                  name
+                FROM
+                  testTable
+                WHERE
+                  id = #id#
+              </select>
+            </sqlMap>
+            """.trimIndent()
 
         return loadXML(xml)
     }

@@ -221,14 +221,14 @@ internal class SqlMapFileConverterTest {
     private fun isEmptyTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("name == null or name.isEmpty()", attributeValue(convertedDocument, "if", "test", 0))
+        assertEquals("(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name')) or name == null or (name instanceof java.util.Collection and name.size() == 0) or (name.getClass().isArray() and @java.lang.reflect.Array@getLength(name) == 0) or (name instanceof String and name.equals(''))", attributeValue(convertedDocument, "if", "test", 0))
         assertEquals("\n       and ( name = #{name}\n       ) \n    ", textContent(convertedDocument, "if", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 0))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 0))
 
-        assertEquals("name2 == null or name2.isEmpty()", attributeValue(convertedDocument, "if", "test", 1))
+        assertEquals("(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name2')) or name2 == null or (name2 instanceof java.util.Collection and name2.size() == 0) or (name2.getClass().isArray() and @java.lang.reflect.Array@getLength(name2) == 0) or (name2 instanceof String and name2.equals(''))", attributeValue(convertedDocument, "if", "test", 1))
         assertEquals("\n         or name = #{name2}\n      ", textContent(convertedDocument, "if", 1))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 1))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 1))
@@ -255,14 +255,14 @@ internal class SqlMapFileConverterTest {
     private fun isNotEmptyTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("name != null and !name.isEmpty()", attributeValue(convertedDocument, "if", "test", 2))
+        assertEquals("!((!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name')) or name == null or (name instanceof java.util.Collection and name.size() == 0) or (name.getClass().isArray() and @java.lang.reflect.Array@getLength(name) == 0) or (name instanceof String and name.equals('')))", attributeValue(convertedDocument, "if", "test", 2))
         assertEquals("\n       and ( name = #{name}\n       ) \n    ", textContent(convertedDocument, "if", 2))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 2))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 2))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 2))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 2))
 
-        assertEquals("name2 != null and !name2.isEmpty()", attributeValue(convertedDocument, "if", "test", 3))
+        assertEquals("!((!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name2')) or name2 == null or (name2 instanceof java.util.Collection and name2.size() == 0) or (name2.getClass().isArray() and @java.lang.reflect.Array@getLength(name2) == 0) or (name2 instanceof String and name2.equals('')))", attributeValue(convertedDocument, "if", "test", 3))
         assertEquals("\n         or name = #{name2}\n      ", textContent(convertedDocument, "if", 3))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 3))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 3))
@@ -293,7 +293,7 @@ internal class SqlMapFileConverterTest {
     private fun isEqualTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("name.toString().equals('foo'.toString())", attributeValue(convertedDocument, "if", "test", 4))
+        assertEquals("((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('name'))) and name.toString().equals('foo'.toString())", attributeValue(convertedDocument, "if", "test", 4))
         assertEquals("\n       and ( name = #{name}\n       ) \n    ", textContent(convertedDocument, "if", 4))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 4))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 4))
@@ -302,7 +302,7 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "open", 4))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 4))
 
-        assertEquals("name2.toString().equals(compareName2.toString())", attributeValue(convertedDocument, "if", "test", 5))
+        assertEquals("((!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('name2'))) and name2.toString().equals(compareName2.toString())", attributeValue(convertedDocument, "if", "test", 5))
         assertEquals("\n         or name = #{name2}\n      ", textContent(convertedDocument, "if", 5))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 5))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 5))
@@ -335,7 +335,7 @@ internal class SqlMapFileConverterTest {
     private fun isNotEqualTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("!name.toString().equals('foo'.toString())", attributeValue(convertedDocument, "if", "test", 6))
+        assertEquals("(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name')) or !name.toString().equals('foo'.toString())", attributeValue(convertedDocument, "if", "test", 6))
         assertEquals("\n       and ( name = #{name}\n       ) \n    ", textContent(convertedDocument, "if", 6))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 6))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 6))
@@ -344,7 +344,7 @@ internal class SqlMapFileConverterTest {
         assertFalse(existsAttribute(convertedDocument, "if", "open", 6))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 6))
 
-        assertEquals("!name2.toString().equals(compareName2.toString())", attributeValue(convertedDocument, "if", "test", 7))
+        assertEquals("(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name2')) or !name2.toString().equals(compareName2.toString())", attributeValue(convertedDocument, "if", "test", 7))
         assertEquals("\n         or name = #{name2}\n      ", textContent(convertedDocument, "if", 7))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 7))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 7))
@@ -609,14 +609,14 @@ internal class SqlMapFileConverterTest {
     private fun isPropertyAvailableTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("_parameter.containsKey('name')", attributeValue(convertedDocument, "if", "test", 20))
+        assertEquals("(!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('name'))", attributeValue(convertedDocument, "if", "test", 20))
         assertEquals("\n       and ( name = #{name}\n       ) \n    ", textContent(convertedDocument, "if", 20))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 20))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 20))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 20))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 20))
 
-        assertEquals("_parameter.containsKey('name2')", attributeValue(convertedDocument, "if", "test", 21))
+        assertEquals("(!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('name2'))", attributeValue(convertedDocument, "if", "test", 21))
         assertEquals("\n         or name = #{name2}\n      ", textContent(convertedDocument, "if", 21))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 21))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 21))
@@ -643,14 +643,14 @@ internal class SqlMapFileConverterTest {
     private fun isNotPropertyAvailableTagTestAfterConvert(convertedDocument: Document) {
         val ifTagsAfterConvert = convertedDocument.getElementsByTagName("if")
         assertEquals(COUNT_OF_IF_TAG, ifTagsAfterConvert.length)
-        assertEquals("!_parameter.containsKey('name')", attributeValue(convertedDocument, "if", "test", 22))
+        assertEquals("!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name')", attributeValue(convertedDocument, "if", "test", 22))
         assertEquals("\n       and ( name = #{name3}\n       ) \n    ", textContent(convertedDocument, "if", 22))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 22))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 22))
         assertFalse(existsAttribute(convertedDocument, "if", "open", 22))
         assertFalse(existsAttribute(convertedDocument, "if", "close", 22))
 
-        assertEquals("!_parameter.containsKey('name2')", attributeValue(convertedDocument, "if", "test", 23))
+        assertEquals("!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name2')", attributeValue(convertedDocument, "if", "test", 23))
         assertEquals("\n         or name = #{name4}\n      ", textContent(convertedDocument, "if", 23))
         assertFalse(existsAttribute(convertedDocument, "if", "prepend", 23))
         assertFalse(existsAttribute(convertedDocument, "if", "property", 23))
@@ -745,159 +745,161 @@ internal class SqlMapFileConverterTest {
     }
 
     private fun loadValidDocument(): Document {
-        val xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<!DOCTYPE sqlMap\n" +
-                "  PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\"\n" +
-                "  \"http://ibatis.apache.org/dtd/sql-map-2.dtd\">\n" +
-                "\n" +
-                "<sqlMap namespace=\"jp.ogasada.test\">\n" +
-                "  <resultMap id=\"findResult\" class=\"HashMap\" groupBy=\"id\">\n" +
-                "    <result property=\"id\" column=\"id\" javaType=\"int\" />\n" +
-                "    <result property=\"name\" column=\"name\" javaType=\"String\" />\n" +
-                "    <result property=\"detailList\" javaType=\"List\" resultMap=\"jp.ogasada.ibatistomybatis3.detailResult\" />\n" +
-                "  </resultMap>\n" +
-                "  <select id=\"find\" resultMap=\"findResult\" parameterClass=\"long\">\n" +
-                "    SELECT\n" +
-                "      id,\n" +
-                "      name\n" +
-                "    FROM\n" +
-                "      testTable\n" +
-                "    WHERE\n" +
-                "      id = #id#\n" +
-                "    <isEmpty open=\"and (\" property=\"name\" close=\")\">\n" +
-                "      name = #name#\n" +
-                "      <isEmpty prepend=\"or\" property=\"name2\">\n" +
-                "        name = #name2#\n" +
-                "      </isEmpty>\n" +
-                "    </isEmpty>\n" +
-                "  </select>\n" +
-                "  <select id=\"find2\" resultClass=\"String\" parameterClass=\"long\">\n" +
-                "    SELECT\n" +
-                "      name\n" +
-                "    FROM\n" +
-                "      testTable\n" +
-                "    WHERE\n" +
-                "    <isNotEmpty open=\"and (\" property=\"name\" close=\")\">\n" +
-                "      name = #name#\n" +
-                "      <isNotEmpty prepend=\"or\" property=\"name2\">\n" +
-                "        name = #name2#\n" +
-                "      </isNotEmpty>\n" +
-                "    </isNotEmpty>\n" +
-                "    <isEqual open=\"and (\" property=\"name\" compareValue=\"foo\" close=\")\">\n" +
-                "      name = #name#\n" +
-                "      <isEqual prepend=\"or\" property=\"name2\" compareProperty=\"compareName2\">\n" +
-                "        name = #name2#\n" +
-                "      </isEqual>\n" +
-                "    </isEqual>\n" +
-                "    <isNotEqual open=\"and (\" property=\"name\" compareValue=\"foo\" close=\")\">\n" +
-                "      name = #name#\n" +
-                "      <isNotEqual prepend=\"or\" property=\"name2\" compareProperty=\"compareName2\">\n" +
-                "        name = #name2#\n" +
-                "      </isNotEqual>\n" +
-                "    </isNotEqual>\n" +
-                "    <isGreaterEqual open=\"and (\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
-                "      id = #id#\n" +
-                "      <isGreaterEqual prepend=\"or\" property=\"id2\" compareProperty=\"compareId2\">\n" +
-                "        id = #id2#\n" +
-                "      </isGreaterEqual>\n" +
-                "    </isGreaterEqual>\n" +
-                "    <isGreaterThan open=\"and (\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
-                "      id = #id#\n" +
-                "      <isGreaterThan prepend=\"or\" property=\"id2\" compareProperty=\"compareId2\">\n" +
-                "        id = #id2#\n" +
-                "      </isGreaterThan>\n" +
-                "    </isGreaterThan>\n" +
-                "    <isLessEqual open=\"and (\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
-                "      id = #id#\n" +
-                "      <isLessEqual prepend=\"or\" property=\"id2\" compareProperty=\"compareId2\">\n" +
-                "        id = #id2#\n" +
-                "      </isLessEqual>\n" +
-                "    </isLessEqual>\n" +
-                "    <isLessThan open=\"and (\" property=\"id\" compareValue=\"1\" close=\")\">\n" +
-                "      id = #id#\n" +
-                "      <isLessThan prepend=\"or\" property=\"id2\" compareProperty=\"compareId2\">\n" +
-                "        id = #id2#\n" +
-                "      </isLessThan>\n" +
-                "    </isLessThan>\n" +
-                "    <isNull open=\"and (\" property=\"name\" close=\")\">\n" +
-                "      name = #name#\n" +
-                "      <isNull prepend=\"or\" property=\"name2\">\n" +
-                "        name = #name2#\n" +
-                "      </isNull>\n" +
-                "    </isNull>\n" +
-                "    <isNotNull open=\"and (\" property=\"name\" close=\")\">\n" +
-                "      name = #name#\n" +
-                "      <isNotNull prepend=\"or\" property=\"name2\">\n" +
-                "        name = #name2#\n" +
-                "      </isNotNull>\n" +
-                "    </isNotNull>\n" +
-                "    <isPropertyAvailable open=\"and (\" property=\"name\" close=\")\">\n" +
-                "      name = #name#\n" +
-                "      <isPropertyAvailable prepend=\"or\" property=\"name2\">\n" +
-                "        name = #name2#\n" +
-                "      </isPropertyAvailable>\n" +
-                "    </isPropertyAvailable>\n" +
-                "    <isNotPropertyAvailable open=\"and (\" property=\"name\" close=\")\">\n" +
-                "      name = #name3#\n" +
-                "      <isNotPropertyAvailable prepend=\"or\" property=\"name2\">\n" +
-                "        name = #name4#\n" +
-                "      </isNotPropertyAvailable>\n" +
-                "    </isNotPropertyAvailable>\n" +
-                "    <iterate property=\"list\" open=\"(\" close=\")\" conjunction=\" OR \" >\n" +
-                "        (name = #list[].name#\n" +
-                "      <iterate property=\"list[].subList\" prepend=\"id IN\" open=\"(\" close=\")\" conjunction=\",\" >\n" +
-                "          #list[].subList[].id#\n" +
-                "      </iterate>\n" +
-                "        )\n" +
-                "    </iterate>\n" +
-                "  </select>\n" +
-                "  <select id=\"find3\" resultMap=\"findResult\" parameterClass=\"long\">\n" +
-                "    SELECT\n" +
-                "      id,\n" +
-                "      name\n" +
-                "    FROM\n" +
-                "      testTable\n" +
-                "    <dynamic prepend=\"where\">\n" +
-                "      <isEqual prepend=\"and\" property=\"id\" compareValue=\"1\">\n" +
-                "        id = #id#\n" +
-                "      </isEqual>\n" +
-                "      <isEqual prepend=\"and\" property=\"name\" compareValue=\"foo\">\n" +
-                "        name = #name#\n" +
-                "      </isEqual>\n" +
-                "      <iterate prepend=\"AND\" open=\"(\" close=\")\" conjunction=\" AND \" >\n" +
-                "        id = #[]#\n" +
-                "      </iterate>\n" +
-                "    </dynamic>\n" +
-                "  </select>\n" +
-                "  <insert id=\"insert\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
-                "    INSERT INTO testTable (\n" +
-                "      id,\n" +
-                "      name\n" +
-                "    )\n" +
-                "    VALUES (\n" +
-                "      #id#,\n" +
-                "      #name#\n" +
-                "    )\n" +
-                "  </insert>\n" +
-                "  <update id=\"update\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
-                "    UPDATE testTable\n" +
-                "    <dynamic prepend=\"set\">\n" +
-                "      <isNotNull prepend=\",\" property=\"id\">\n" +
-                "        id = #id#\n" +
-                "      </isNotNull>\n" +
-                "      <isNotNull prepend=\",\" property=\"name\">\n" +
-                "        name = #name#\n" +
-                "      </isNotNull>\n" +
-                "    </dynamic>\n" +
-                "    WHERE\n" +
-                "      key = #key#\n" +
-                "  </update>\n" +
-                "  <delete id=\"delete\" parameterClass=\"jp.ogasada.ibatistomybatis3.TestTableEntity\" >\n" +
-                "    DELETE FROM testTable \n" +
-                "    WHERE \n" +
-                "      id = #id#\n" +
-                "  </delete>\n" +
-                "</sqlMap>\n"
+        val xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE sqlMap
+              PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+              "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+            <sqlMap namespace="jp.ogasada.test">
+              <resultMap id="findResult" class="HashMap" groupBy="id">
+                <result property="id" column="id" javaType="int" />
+                <result property="name" column="name" javaType="String" />
+                <result property="detailList" javaType="List" resultMap="jp.ogasada.ibatistomybatis3.detailResult" />
+              </resultMap>
+              <select id="find" resultMap="findResult" parameterClass="long">
+                SELECT
+                  id,
+                  name
+                FROM
+                  testTable
+                WHERE
+                  id = #id#
+                <isEmpty open="and (" property="name" close=")">
+                  name = #name#
+                  <isEmpty prepend="or" property="name2">
+                    name = #name2#
+                  </isEmpty>
+                </isEmpty>
+              </select>
+              <select id="find2" resultClass="String" parameterClass="long">
+                SELECT
+                  name
+                FROM
+                  testTable
+                WHERE
+                <isNotEmpty open="and (" property="name" close=")">
+                  name = #name#
+                  <isNotEmpty prepend="or" property="name2">
+                    name = #name2#
+                  </isNotEmpty>
+                </isNotEmpty>
+                <isEqual open="and (" property="name" compareValue="foo" close=")">
+                  name = #name#
+                  <isEqual prepend="or" property="name2" compareProperty="compareName2">
+                    name = #name2#
+                  </isEqual>
+                </isEqual>
+                <isNotEqual open="and (" property="name" compareValue="foo" close=")">
+                  name = #name#
+                  <isNotEqual prepend="or" property="name2" compareProperty="compareName2">
+                    name = #name2#
+                  </isNotEqual>
+                </isNotEqual>
+                <isGreaterEqual open="and (" property="id" compareValue="1" close=")">
+                  id = #id#
+                  <isGreaterEqual prepend="or" property="id2" compareProperty="compareId2">
+                    id = #id2#
+                  </isGreaterEqual>
+                </isGreaterEqual>
+                <isGreaterThan open="and (" property="id" compareValue="1" close=")">
+                  id = #id#
+                  <isGreaterThan prepend="or" property="id2" compareProperty="compareId2">
+                    id = #id2#
+                  </isGreaterThan>
+                </isGreaterThan>
+                <isLessEqual open="and (" property="id" compareValue="1" close=")">
+                  id = #id#
+                  <isLessEqual prepend="or" property="id2" compareProperty="compareId2">
+                    id = #id2#
+                  </isLessEqual>
+                </isLessEqual>
+                <isLessThan open="and (" property="id" compareValue="1" close=")">
+                  id = #id#
+                  <isLessThan prepend="or" property="id2" compareProperty="compareId2">
+                    id = #id2#
+                  </isLessThan>
+                </isLessThan>
+                <isNull open="and (" property="name" close=")">
+                  name = #name#
+                  <isNull prepend="or" property="name2">
+                    name = #name2#
+                  </isNull>
+                </isNull>
+                <isNotNull open="and (" property="name" close=")">
+                  name = #name#
+                  <isNotNull prepend="or" property="name2">
+                    name = #name2#
+                  </isNotNull>
+                </isNotNull>
+                <isPropertyAvailable open="and (" property="name" close=")">
+                  name = #name#
+                  <isPropertyAvailable prepend="or" property="name2">
+                    name = #name2#
+                  </isPropertyAvailable>
+                </isPropertyAvailable>
+                <isNotPropertyAvailable open="and (" property="name" close=")">
+                  name = #name3#
+                  <isNotPropertyAvailable prepend="or" property="name2">
+                    name = #name4#
+                  </isNotPropertyAvailable>
+                </isNotPropertyAvailable>
+                <iterate property="list" open="(" close=")" conjunction=" OR " >
+                    (name = #list[].name#
+                  <iterate property="list[].subList" prepend="id IN" open="(" close=")" conjunction="," >
+                      #list[].subList[].id#
+                  </iterate>
+                    )
+                </iterate>
+              </select>
+              <select id="find3" resultMap="findResult" parameterClass="long">
+                SELECT
+                  id,
+                  name
+                FROM
+                  testTable
+                <dynamic prepend="where">
+                  <isEqual prepend="and" property="id" compareValue="1">
+                    id = #id#
+                  </isEqual>
+                  <isEqual prepend="and" property="name" compareValue="foo">
+                    name = #name#
+                  </isEqual>
+                  <iterate prepend="AND" open="(" close=")" conjunction=" AND " >
+                    id = #[]#
+                  </iterate>
+                </dynamic>
+              </select>
+              <insert id="insert" parameterClass="jp.ogasada.ibatistomybatis3.TestTableEntity" >
+                INSERT INTO testTable (
+                  id,
+                  name
+                )
+                VALUES (
+                  #id#,
+                  #name#
+                )
+              </insert>
+              <update id="update" parameterClass="jp.ogasada.ibatistomybatis3.TestTableEntity" >
+                UPDATE testTable
+                <dynamic prepend="set">
+                  <isNotNull prepend="," property="id">
+                    id = #id#
+                  </isNotNull>
+                  <isNotNull prepend="," property="name">
+                    name = #name#
+                  </isNotNull>
+                </dynamic>
+                WHERE
+                  key = #key#
+              </update>
+              <delete id="delete" parameterClass="jp.ogasada.ibatistomybatis3.TestTableEntity" >
+                DELETE FROM testTable
+                WHERE
+                  id = #id#
+              </delete>
+            </sqlMap>
+            """.trimIndent()
 
         return loadXML(xml)
     }
