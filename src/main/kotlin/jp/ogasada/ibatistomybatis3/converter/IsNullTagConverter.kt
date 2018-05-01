@@ -7,6 +7,8 @@ object IsNullTagConverter: ITagConverter {
     /**
      * convert `isNull` tag as follows
      *
+     * ## case 1
+     *
      * ### before
      *
      * ```
@@ -28,13 +30,31 @@ object IsNullTagConverter: ITagConverter {
      *   </if> )
      * </if>
      * ```
+     *
+     * ## case 2
+     *
+     * ### before
+     *
+     * ```
+     * <isNull open="and (" close=")">
+     *   name = #name#
+     * </isNull>
+     * ```
+     *
+     * ### after
+     *
+     * ```
+     * <if test="_parameter == null">
+     *   and ( name = #name# )
+     * </if>
+     * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
             .prependAttributeValueToTextContent("isNull", "open")
             .prependAttributeValueToTextContent("isNull", "prepend")
             .appendAttributeValueToTextContent("isNull", "close")
-                val attributeValue = node.getAttribute("property")
             .createNewAttribute("isNull", "test") { _, node ->
+                val attributeValue = if (node.hasAttribute("property")) node.getAttribute("property") else "_parameter"
                 "$attributeValue == null"
             }
             .removeAttribute("isNull", "prepend")
