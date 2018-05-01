@@ -7,6 +7,8 @@ object IsLessEqualTagConverter: ITagConverter {
     /**
      * convert `isLessEqual` tag as follows
      *
+     * ## case 1
+     *
      * ### before
      *
      * ```
@@ -28,13 +30,31 @@ object IsLessEqualTagConverter: ITagConverter {
      *   </if> )
      * </if>
      * ```
+     *
+     * ## case 2
+     *
+     * ### before
+     *
+     * ```
+     * <isLessEqual open="and (" compareValue="1" close=")">
+     *   id = #id#
+     * </isLessEqual>
+     * ```
+     *
+     * ### after
+     *
+     * ```
+     * <if test="_parameter lte 1">
+     *   and ( id = #id# )
+     * </if>
+     * ```
      */
     override fun convert(xmlDocument: Document): Document = xmlDocument
             .prependAttributeValueToTextContent("isLessEqual", "open")
             .prependAttributeValueToTextContent("isLessEqual", "prepend")
             .appendAttributeValueToTextContent("isLessEqual", "close")
-                val attributeValue = node.getAttribute("property")
             .createNewAttribute("isLessEqual", "test") { _, node ->
+                val attributeValue = if (node.hasAttribute("property")) node.getAttribute("property") else "_parameter"
                 when {
                     node.hasAttribute("compareValue") -> "$attributeValue lte ${node.getAttribute("compareValue")}"
                     node.hasAttribute("compareProperty") -> "$attributeValue lte ${node.getAttribute("compareProperty")}"
