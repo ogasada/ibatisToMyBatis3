@@ -45,7 +45,7 @@ dokka {
 
 task convert(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'jp.ogasada.ibatistomybatis3.converter.Main'
+    main = 'jp.ogasada.ibatistomybatis3.Main'
 
     args(System.properties["targetDir"])
 }

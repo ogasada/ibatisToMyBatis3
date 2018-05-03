@@ -1,5 +1,6 @@
-package jp.ogasada.ibatistomybatis3.converter
+package jp.ogasada.ibatistomybatis3
 
+import jp.ogasada.ibatistomybatis3.converter.SqlMapFileConverter
 import org.w3c.dom.Document
 import java.io.File
 import java.io.FileOutputStream
