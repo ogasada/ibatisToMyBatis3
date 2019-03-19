@@ -10,7 +10,7 @@ internal class IterateTagConverterTest {
         val loadedDocument = loadValidDocument()
 
         val iterateTagsBeforeConvert = loadedDocument.getElementsByTagName("iterate")
-        assertEquals(3, iterateTagsBeforeConvert.length)
+        assertEquals(7, iterateTagsBeforeConvert.length)
         assertEquals("list", attributeValue(loadedDocument, "iterate", "property", 0))
         assertEquals("(", attributeValue(loadedDocument, "iterate", "open", 0))
         assertEquals(")", attributeValue(loadedDocument, "iterate", "close", 0))
@@ -31,10 +31,38 @@ internal class IterateTagConverterTest {
         assertEquals("\n        id = #[]#\n      ", textContent(loadedDocument, "iterate", 2))
         assertFalse(existsAttribute(loadedDocument, "iterate", "property", 2))
 
+        assertEquals("AND", attributeValue(loadedDocument, "iterate", "prepend", 3))
+        assertEquals("(", attributeValue(loadedDocument, "iterate", "open", 3))
+        assertEquals(")", attributeValue(loadedDocument, "iterate", "close", 3))
+        assertEquals(" AND ", attributeValue(loadedDocument, "iterate", "conjunction", 3))
+        assertEquals("\n        id = #anyName[]#\n      ", textContent(loadedDocument, "iterate", 3))
+        assertFalse(existsAttribute(loadedDocument, "iterate", "property", 3))
+
+        assertEquals("AND", attributeValue(loadedDocument, "iterate", "prepend", 4))
+        assertEquals("(", attributeValue(loadedDocument, "iterate", "open", 4))
+        assertEquals(")", attributeValue(loadedDocument, "iterate", "close", 4))
+        assertEquals(" AND ", attributeValue(loadedDocument, "iterate", "conjunction", 4))
+        assertEquals("\n        id = #anyName[].name#\n      ", textContent(loadedDocument, "iterate", 4))
+        assertFalse(existsAttribute(loadedDocument, "iterate", "property", 4))
+
+        assertEquals("AND", attributeValue(loadedDocument, "iterate", "prepend", 5))
+        assertEquals("(", attributeValue(loadedDocument, "iterate", "open", 5))
+        assertEquals(")", attributeValue(loadedDocument, "iterate", "close", 5))
+        assertEquals(" AND ", attributeValue(loadedDocument, "iterate", "conjunction", 5))
+        assertEquals("\n        id = \$anyName[]\$\n      ", textContent(loadedDocument, "iterate", 5))
+        assertFalse(existsAttribute(loadedDocument, "iterate", "property", 5))
+
+        assertEquals("AND", attributeValue(loadedDocument, "iterate", "prepend", 6))
+        assertEquals("(", attributeValue(loadedDocument, "iterate", "open", 6))
+        assertEquals(")", attributeValue(loadedDocument, "iterate", "close", 6))
+        assertEquals(" AND ", attributeValue(loadedDocument, "iterate", "conjunction", 6))
+        assertEquals("\n        id = \$anyName[].name\$\n      ", textContent(loadedDocument, "iterate", 6))
+        assertFalse(existsAttribute(loadedDocument, "iterate", "property", 6))
+
         val convertedDocument = IterateTagConverter.convert(loadedDocument)
 
         val foreachTagsAfterConvert = convertedDocument.getElementsByTagName("foreach")
-        assertEquals(3, foreachTagsAfterConvert.length)
+        assertEquals(7, foreachTagsAfterConvert.length)
         assertEquals("listItem", attributeValue(convertedDocument, "foreach", "item", 0))
         assertEquals("list", attributeValue(convertedDocument, "foreach", "collection", 0))
         assertEquals("(", attributeValue(convertedDocument, "foreach", "open", 0))
@@ -56,6 +84,34 @@ internal class IterateTagConverterTest {
         assertEquals(" AND ", attributeValue(convertedDocument, "foreach", "separator", 2))
         assertEquals("\n        id = #item#\n      ", textContent(convertedDocument, "foreach", 2))
 
+        assertEquals("item", attributeValue(convertedDocument, "foreach", "item", 3))
+        assertEquals("list", attributeValue(convertedDocument, "foreach", "collection", 3))
+        assertEquals("AND (", attributeValue(convertedDocument, "foreach", "open", 3))
+        assertEquals(")", attributeValue(convertedDocument, "foreach", "close", 3))
+        assertEquals(" AND ", attributeValue(convertedDocument, "foreach", "separator", 3))
+        assertEquals("\n        id = #item#\n      ", textContent(convertedDocument, "foreach", 3))
+
+        assertEquals("item", attributeValue(convertedDocument, "foreach", "item", 4))
+        assertEquals("list", attributeValue(convertedDocument, "foreach", "collection", 4))
+        assertEquals("AND (", attributeValue(convertedDocument, "foreach", "open", 4))
+        assertEquals(")", attributeValue(convertedDocument, "foreach", "close", 4))
+        assertEquals(" AND ", attributeValue(convertedDocument, "foreach", "separator", 4))
+        assertEquals("\n        id = #item.name#\n      ", textContent(convertedDocument, "foreach", 4))
+
+        assertEquals("item", attributeValue(convertedDocument, "foreach", "item", 5))
+        assertEquals("list", attributeValue(convertedDocument, "foreach", "collection", 5))
+        assertEquals("AND (", attributeValue(convertedDocument, "foreach", "open", 5))
+        assertEquals(")", attributeValue(convertedDocument, "foreach", "close", 5))
+        assertEquals(" AND ", attributeValue(convertedDocument, "foreach", "separator", 5))
+        assertEquals("\n        id = \$item\$\n      ", textContent(convertedDocument, "foreach", 5))
+
+        assertEquals("item", attributeValue(convertedDocument, "foreach", "item", 6))
+        assertEquals("list", attributeValue(convertedDocument, "foreach", "collection", 6))
+        assertEquals("AND (", attributeValue(convertedDocument, "foreach", "open", 6))
+        assertEquals(")", attributeValue(convertedDocument, "foreach", "close", 6))
+        assertEquals(" AND ", attributeValue(convertedDocument, "foreach", "separator", 6))
+        assertEquals("\n        id = \$item.name\$\n      ", textContent(convertedDocument, "foreach", 6))
+
         assertFalse(existsAttribute(convertedDocument, "foreach", "prepend", 0))
         assertFalse(existsAttribute(convertedDocument, "foreach", "property", 0))
         assertFalse(existsAttribute(convertedDocument, "foreach", "conjunction", 0))
@@ -67,6 +123,22 @@ internal class IterateTagConverterTest {
         assertFalse(existsAttribute(convertedDocument, "foreach", "prepend", 2))
         assertFalse(existsAttribute(convertedDocument, "foreach", "property", 2))
         assertFalse(existsAttribute(convertedDocument, "foreach", "conjunction", 2))
+
+        assertFalse(existsAttribute(convertedDocument, "foreach", "prepend", 3))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "property", 3))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "conjunction", 3))
+
+        assertFalse(existsAttribute(convertedDocument, "foreach", "prepend", 4))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "property", 4))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "conjunction", 4))
+
+        assertFalse(existsAttribute(convertedDocument, "foreach", "prepend", 5))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "property", 5))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "conjunction", 5))
+
+        assertFalse(existsAttribute(convertedDocument, "foreach", "prepend", 6))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "property", 6))
+        assertFalse(existsAttribute(convertedDocument, "foreach", "conjunction", 6))
 
     }
 
@@ -98,6 +170,18 @@ internal class IterateTagConverterTest {
                   </iterate>
                   <iterate prepend="AND" open="(" close=")" conjunction=" AND " >
                     id = #[]#
+                  </iterate>
+                  <iterate prepend="AND" open="(" close=")" conjunction=" AND " >
+                    id = #anyName[]#
+                  </iterate>
+                  <iterate prepend="AND" open="(" close=")" conjunction=" AND " >
+                    id = #anyName[].name#
+                  </iterate>
+                  <iterate prepend="AND" open="(" close=")" conjunction=" AND " >
+                    id = ${"$"}anyName[]${"$"}
+                  </iterate>
+                  <iterate prepend="AND" open="(" close=")" conjunction=" AND " >
+                    id = ${"$"}anyName[].name${"$"}
                   </iterate>
               </select></sqlMap>
             """.trimIndent()
