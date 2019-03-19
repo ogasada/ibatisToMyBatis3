@@ -53,6 +53,78 @@ object IterateTagConverter: ITagConverter {
      * </foreach>
      * ```
      *
+     * ## case 3
+     *
+     * ### before
+     *
+     * ```
+     * <iterate open="(" close=") " conjunction=" OR " >
+     *   (name = #anyName[]#)
+     * </iterate>
+     * ```
+     *
+     * ### after
+     *
+     * ```
+     * <foreach item="item" collection="list" open="(" close=") " separator=" OR " >
+     *   (name = #item#)
+     * </foreach>
+     * ```
+     *
+     * ## case 4
+     *
+     * ### before
+     *
+     * ```
+     * <iterate open="(" close=") " conjunction=" OR " >
+     *   (name = #anyName[].name#)
+     * </iterate>
+     * ```
+     *
+     * ### after
+     *
+     * ```
+     * <foreach item="item" collection="list" open="(" close=") " separator=" OR " >
+     *   (name = #item.name#)
+     * </foreach>
+     * ```
+     *
+     * ## case 5
+     *
+     * ### before
+     *
+     * ```
+     * <iterate open="(" close=") " conjunction=" OR " >
+     *   (name = $anyName[]$)
+     * </iterate>
+     * ```
+     *
+     * ### after
+     *
+     * ```
+     * <foreach item="item" collection="list" open="(" close=") " separator=" OR " >
+     *   (name = $item$)
+     * </foreach>
+     * ```
+     *
+     * ## case 6
+     *
+     * ### before
+     *
+     * ```
+     * <iterate open="(" close=") " conjunction=" OR " >
+     *   (name = $anyName[].name$)
+     * </iterate>
+     * ```
+     *
+     * ### after
+     *
+     * ```
+     * <foreach item="item" collection="list" open="(" close=") " separator=" OR " >
+     *   (name = $item.name$)
+     * </foreach>
+     * ```
+     *
      */
     override fun convert(xmlDocument: Document): Document = convertAccessorValue(xmlDocument)
             .createNewAttribute("iterate", "item") { _, node ->
@@ -72,14 +144,14 @@ object IterateTagConverter: ITagConverter {
             .convertTagName("iterate", "foreach")
 
     private fun convertAccessorValue(xmlDocument: Document): Document {
-        fun loop(node: Node, oldAccessor: String, newAccessor: String) {
+        fun loop(node: Node, oldAccessor: String, newAccessor: String, isRegexp: Boolean) {
             when (node.nodeType) {
                 Node.ELEMENT_NODE -> {
                     node as Element
                     if (node.hasChildNodes()) {
                         val childNodes = node.childNodes
                         (0 until childNodes.length).forEach {
-                            loop(childNodes.item(it), oldAccessor, newAccessor)
+                            loop(childNodes.item(it), oldAccessor, newAccessor, isRegexp)
                         }
                     }
                     val propertyValue = node.getAttribute("property")
@@ -90,7 +162,7 @@ object IterateTagConverter: ITagConverter {
                 Node.TEXT_NODE -> {
                     val textContent = node.textContent
                     if (textContent.contains(oldAccessor)) {
-                        node.textContent = textContent.replace(oldAccessor, newAccessor)
+                        node.textContent = if (isRegexp) textContent.replace("""([#|$]).*${Regex.escape(oldAccessor)}(.*[#|$])""".toRegex(), "$1$newAccessor$2") else textContent.replace(oldAccessor, newAccessor)
                     }
                 }
             }
@@ -100,8 +172,8 @@ object IterateTagConverter: ITagConverter {
         (0 until iterateTags.length).reversed().forEach {
             val node = iterateTags.item(it) as Element
             val propertyValue = node.getAttribute("property")
-            val (oldAccessor, newAccessor) = if (node.hasAttribute("property")) Pair("${propertyValue}[]", "${propertyValue}Item") else Pair("[]", "item")
-            loop(node, oldAccessor, newAccessor)
+            val (oldAccessor, newAccessor, isRegexp) = if (node.hasAttribute("property")) Triple("${propertyValue}[]", "${propertyValue}Item", false) else Triple("[]", "item", true)
+            loop(node, oldAccessor, newAccessor, isRegexp)
         }
         return xmlDocument
     }
