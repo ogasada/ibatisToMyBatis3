@@ -20,7 +20,7 @@ object IsEmptyTagConverter : ITagConverter {
      * ### after
      *
      * ```
-     * <if test="(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name')) or name == null or (name instanceof java.util.Collection and name.size() == 0) or (name.getClass().isArray() and @java.lang.reflect.Array@getLength(name) == 0) or (name instanceof String and name.equals(''))">
+     * <!--name isEmpty--><if test="(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name')) or name == null or (name instanceof java.util.Collection and name.size() == 0) or (name.getClass().isArray() and @java.lang.reflect.Array@getLength(name) == 0) or (name instanceof String and name.equals(''))">
      *   and ( name = #name# )
      * </if>
      * ```
@@ -38,7 +38,7 @@ object IsEmptyTagConverter : ITagConverter {
      * ### after
      *
      * ```
-     * <if test="(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('_parameter')) or _parameter == null or (_parameter instanceof java.util.Collection and _parameter.size() == 0) or (_parameter.getClass().isArray() and @java.lang.reflect.Array@getLength(_parameter) == 0) or (_parameter instanceof String and _parameter.equals(''))">
+     * <!--_parameter isEmpty--><if test="(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('_parameter')) or _parameter == null or (_parameter instanceof java.util.Collection and _parameter.size() == 0) or (_parameter.getClass().isArray() and @java.lang.reflect.Array@getLength(_parameter) == 0) or (_parameter instanceof String and _parameter.equals(''))">
      *   and ( name = #value# )
      * </if>
      * ```
@@ -49,6 +49,7 @@ object IsEmptyTagConverter : ITagConverter {
             .appendAttributeValueToTextContent("isEmpty", "close")
             .createNewAttribute("isEmpty", "test") { _, node ->
                 val attributeValue = if (node.hasAttribute("property")) node.getAttribute("property") else "_parameter"
+                node.parentNode.insertBefore(xmlDocument.createComment("$attributeValue isEmpty"), node)
                 "(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('$attributeValue')) or " +
                         "$attributeValue == null or " +
                         "($attributeValue instanceof java.util.Collection and $attributeValue.size() == 0) or " +

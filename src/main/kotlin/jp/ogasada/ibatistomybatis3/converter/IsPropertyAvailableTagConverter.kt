@@ -23,9 +23,9 @@ object IsPropertyAvailableTagConverter : ITagConverter {
      * ### after
      *
      * ```
-     * <if test="(!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('name'))">
+     * <!--name isPropertyAvailable--><if test="(!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('name'))">
      *   and ( name = #name#
-     *   <if test="(!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('name2'))">
+     *   <!--name2 isPropertyAvailable--><if test="(!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('name2'))">
      *     or name = #name2#
      *   </if> )
      * </if>
@@ -44,7 +44,7 @@ object IsPropertyAvailableTagConverter : ITagConverter {
      * ### after
      *
      * ```
-     * <if test="(!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('_parameter'))">
+     * <!--_parameter isPropertyAvailable--><if test="(!_parameter instanceof java.util.Map) or (!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('_parameter'))">
      *   and ( name = #name# )
      * </if>
      * ```
@@ -55,6 +55,7 @@ object IsPropertyAvailableTagConverter : ITagConverter {
             .appendAttributeValueToTextContent("isPropertyAvailable", "close")
             .createNewAttribute("isPropertyAvailable", "test") { _, node ->
                 val attributeValue = if (node.hasAttribute("property")) node.getAttribute("property") else "_parameter"
+                node.parentNode.insertBefore(xmlDocument.createComment("$attributeValue isPropertyAvailable"), node)
                 "(!_parameter instanceof java.util.Map) or " +
                         "(!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and _parameter.containsKey('$attributeValue'))"
             }

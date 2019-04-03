@@ -23,9 +23,9 @@ object IsNotPropertyAvailableTagConverter: ITagConverter {
      * ### after
      *
      * ```
-     * <if test="!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name')">
+     * <!--name isNotPropertyAvailable--><if test="!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name')">
      *   and ( name = #name3#
-     *   <if test="!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name2')">
+     *   <!--name2 isNotPropertyAvailable--><if test="!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('name2')">
      *     or name = #name4#
      *   </if> )
      * </if>
@@ -44,7 +44,7 @@ object IsNotPropertyAvailableTagConverter: ITagConverter {
      * ### after
      *
      * ```
-     * <if test="!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('_parameter')">
+     * <!--_parameter isNotPropertyAvailable--><if test="!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('_parameter')">
      *   and ( name = #name3# )
      * </if>
      * ```
@@ -55,6 +55,7 @@ object IsNotPropertyAvailableTagConverter: ITagConverter {
             .appendAttributeValueToTextContent("isNotPropertyAvailable", "close")
             .createNewAttribute("isNotPropertyAvailable", "test") { _, node ->
                 val attributeValue = if (node.hasAttribute("property")) node.getAttribute("property") else "_parameter"
+                node.parentNode.insertBefore(xmlDocument.createComment("$attributeValue isNotPropertyAvailable"), node)
                 "!_parameter instanceof org.apache.ibatis.session.defaults.DefaultSqlSession\$StrictMap and _parameter instanceof java.util.Map and !_parameter.containsKey('$attributeValue')"
             }
             .removeAttribute("isNotPropertyAvailable", "prepend")
